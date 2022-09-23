@@ -8,7 +8,7 @@
   .input-login {
     @apply appearance-none border rounded w-full py-3 px-3 text-gray-700 leading-tight focus:outline-titleLogin mb-4;
   }
-  .buttonLogin {
-    @apply 
+  .button-next {
+    @apply bg-blue-500 hover:bg-blue-400 text-white font-bold px-4 py-6 border-b-4 border-blue-700 hover:border-blue-500 rounded-full w-48 mt-20;
   }
 }
