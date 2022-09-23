@@ -1,11 +1,14 @@
+@import url('http://fonts.cdnfonts.com/css/segoe-ui-4');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-@tailwind base;
-
-/* @layer base {
-  .body {
-    @apply font-barlow;
+@layer components {
+  .input-login {
+    @apply appearance-none border rounded w-full py-3 px-3 text-gray-700 leading-tight focus:outline-titleLogin mb-4;
   }
-} */
+  .buttonLogin {
+    @apply 
+  }
+}
