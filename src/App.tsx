@@ -1,26 +1,22 @@
 import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import Login from './pages/login';
+import { Routes, Route } from 'react-router-dom';
+import NotFoundPage from './pages/not.found';
+import SignUp from './pages/sign.up';
+import Home from './pages/home';
+import { AnimatePresence } from 'framer-motion';
 
-function App() {
+const App = () => {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <AnimatePresence>
+      <Routes>
+        <Route path='/' element={<Home />} />
+        <Route path='/login' element={<Login />} />
+        <Route path='/signup' element={<SignUp />} />
+        <Route path='*' element={<NotFoundPage />} />
+      </Routes>
+    </AnimatePresence>
   );
-}
+};
 
 export default App;
