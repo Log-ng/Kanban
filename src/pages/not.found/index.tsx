@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 
 const NotFoundPage: React.FC = () => {
   return (
@@ -12,9 +13,11 @@ const NotFoundPage: React.FC = () => {
       <button>
         <div className='mt-6 relative inline-block text-sm font-medium text-[#FF6A3D] group active:text-orange-500 focus:outline-none focus:ring'>
           <span className='absolute inset-0 transition-transform translate-x-0.5 translate-y-0.5 bg-[#FF6A3D] group-hover:translate-y-0 group-hover:translate-x-0'></span>
-          <span className='relative block px-8 py-3 bg-[#1A2238] border border-current'>
-            Go Home
-          </span>
+          <Link to='/'>
+            <span className='relative block px-8 py-3 bg-[#1A2238] border border-current'>
+              Go Home
+            </span>
+          </Link>
         </div>
       </button>
     </main>

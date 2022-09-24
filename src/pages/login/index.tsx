@@ -19,7 +19,7 @@ const Login: React.FC = () => {
               type='password'
               placeholder='Password'
             />
-            <button className='bg-blue-500 hover:bg-blue-400 text-white font-bold py-2 px-4 border-b-4 border-blue-700 hover:border-blue-500 rounded w-full'>
+            <button className='transition bg-blue-500 hover:bg-blue-400 text-white font-bold py-2 px-4 border-b-4 border-blue-700 hover:border-blue-500 rounded w-full'>
               Login
             </button>
             <div className='relative flex py-5 items-center'>
@@ -28,7 +28,7 @@ const Login: React.FC = () => {
               <div className='flex-grow border-t border-gray-400'></div>
             </div>
             <Link to='/signup'>
-              <button className='bg-green-500 hover:bg-green-400 text-white font-bold py-2 px-4 border-b-4 border-green-700 hover:border-green-500 rounded w-full'>
+              <button className='transition bg-green-500 hover:bg-green-400 text-white font-bold py-2 px-4 border-b-4 border-green-700 hover:border-green-500 rounded w-full'>
                 Sign up
               </button>
             </Link>
