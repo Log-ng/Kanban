@@ -2,10 +2,14 @@ import React from 'react';
 import InputForm from '../../components/sign.up.input';
 import { FaArrowRight } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
+import { motion } from 'framer-motion';
 
 const SignUp: React.FC = () => {
   return (
-    <>
+    <motion.div
+      initial={{ y: '400px', opacity: 0 }}
+      animate={{ y: 0, opacity: 1 }}
+    >
       <div className='text-6xl font-bold text-center my-2 text-titleLogin'>
         Kanban
       </div>
@@ -29,7 +33,9 @@ const SignUp: React.FC = () => {
                 <div className='mt-5 text-gray-400'>
                   Already have an account?{' '}
                   <Link to='/login'>
-                    <span className='cursor-pointer text-cyan-600 hover:underline'>Log in.</span>
+                    <span className='cursor-pointer text-cyan-600 hover:underline'>
+                      Log in.
+                    </span>
                   </Link>
                 </div>
               </div>
@@ -37,7 +43,7 @@ const SignUp: React.FC = () => {
           </div>
         </div>
       </div>
-    </>
+    </motion.div>
   );
 };
 

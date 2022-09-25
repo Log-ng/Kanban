@@ -1,0 +1,6 @@
+.env
+.env.enc
+.env.key
+.idea
+user.sql
+vendor

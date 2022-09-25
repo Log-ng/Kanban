@@ -10,7 +10,7 @@ const Home: React.FC = () => {
           Welcome to Kanban!
         </div>
         <div className='text-white text-4xl tracking-widest font-semibold uppercase pl-6 mt-7'>
-          Let's work together
+          Let's work together, try hard to get the best!
         </div>
         <div className='text-teal-200 text-3xl tracking-widest font-semibold uppercase pl-6 mt-7'>
           getting started
