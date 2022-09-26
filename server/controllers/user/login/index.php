@@ -23,14 +23,15 @@ $user->password = htmlspecialchars($user->password);
 
 $checkUser = $user->authLogin();
 if($checkUser) {  
-    echo json_encode(
-      array(
-        'message' => 'Login successful.',
-        'status' => 'Success',
-        'fullName' => $checkUser
-      )
-    );
-    return;
+  echo json_encode(
+    array(
+      'message' => 'Login successful.',
+      'status' => 'Success',
+      'fullName' => $checkUser,
+      'token' => $database->genToken($user->username)
+    )
+  );
+  return;
 }
 echo json_encode(
   array(
