@@ -1,6 +1,5 @@
 import React from 'react';
 import { BsFillKanbanFill } from 'react-icons/bs';
-import { AiOutlineLogout } from 'react-icons/ai';
 import { Link } from 'react-router-dom';
 import { appRouters } from 'shared/url.resources';
 import { useMySelector } from 'redux/hooks';
@@ -38,15 +37,8 @@ const Header: React.FC = () => {
       )}
 
       {isLogin && (
-        <div className='col-start-6 w-full block flex-grow lg:flex lg:items-center lg:w-auto text-white text-xl font-bold'>
+        <div className='bg-white col-start-6 w-full block flex-grow lg:flex lg:items-center lg:w-auto text-colorHome text-xl font-bold rounded m-auto p-1 px-7'>
           {fullName}
-        </div>
-      )}
-      {isLogin && (
-        <div className='w-full block flex-grow lg:flex lg:items-center lg:w-auto'>
-          <button className='bg-red-600 transition text-white font-semibold py-3 px-3 border border-spacing-2 rounded-full hover:scale-95'>
-            <AiOutlineLogout size={20} />
-          </button>
         </div>
       )}
     </nav>

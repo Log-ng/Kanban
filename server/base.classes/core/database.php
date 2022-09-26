@@ -2,6 +2,7 @@
 
 require '../../../vendor/autoload.php';
 use Dotenv\Dotenv;
+use \Firebase\JWT\JWT;
 $dotenv = Dotenv::createImmutable(__DIR__);
 $dotenv->load();
 
@@ -28,5 +29,28 @@ class Database {
         }
 
         return $this->conn;
+    }
+    public function genToken($username) {
+        $secretKey  = $_ENV['SECRET_KEY'];
+        $tokenId    = base64_encode(random_bytes(16));
+        $issuedAt   = new DateTimeImmutable();
+        $expire     = $issuedAt->modify('+6 minutes')->getTimestamp();
+        $serverName = DB_HOST;
+        $data = [
+            'iat'  => $issuedAt->getTimestamp(),    
+            'jti'  => $tokenId,                     
+            'iss'  => $serverName,                 
+            'nbf'  => $issuedAt->getTimestamp(),   
+            'exp'  => $expire,                      
+            'data' => [                     
+                'userName' => $username,   
+            ]
+        ];     
+        return JWT::encode(
+            $data,      
+            $secretKey, 
+            'HS256'   
+        );   
+        
     }
 }
