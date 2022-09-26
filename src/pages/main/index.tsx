@@ -3,14 +3,11 @@ import React from 'react';
 
 const Main: React.FC = () => {
   return (
-    <>
-      <Header/>
-      <div>
-          
-      </div>
-    </>
-  )
-  ;
+    <div className='scale-x-95'>
+      <Header />
+      <div></div>
+    </div>
+  );
 };
 
 export default Main;

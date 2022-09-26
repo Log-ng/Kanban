@@ -7,6 +7,7 @@ import { UserLogin } from 'shared/types/auth';
 import { authLogin } from './services';
 import { loginSuccess } from 'redux/authSlice';
 import { errorList } from './error.list';
+import PropagateLoader from 'react-spinners/PropagateLoader';
 
 const Login: React.FC = () => {
   const navigate = useNavigate();
@@ -15,6 +16,8 @@ const Login: React.FC = () => {
     password: '',
   });
   const [isShowError, setIsShowError] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+
   const dispatch = useMyDispatch();
 
   const onClickLoginButton = () => {
@@ -26,9 +29,11 @@ const Login: React.FC = () => {
             fullName: response.data.fullName,
           })
         );
+        localStorage.setItem('token', response.data.token)
         navigate(`/${appRouters.LINK_TO_MAIN_PAGE}`);
       }
       setIsShowError(true);
+      setIsLoading(false);
     });
   };
 
@@ -64,12 +69,26 @@ const Login: React.FC = () => {
                 setIsShowError(false);
               }}
             />
-            <button
-              className='transition bg-blue-500 hover:bg-blue-400 text-white font-bold py-2 px-4 border-b-4 border-blue-700 hover:border-blue-500 rounded w-full'
-              onClick={onClickLoginButton}
-            >
-              Login
-            </button>
+            {!isLoading && (
+              <button
+                className='transition bg-blue-500 hover:bg-blue-400 text-white font-bold py-2 px-4 border-b-4 border-blue-700 hover:border-blue-500 rounded w-full'
+                onClick={() => {
+                  onClickLoginButton();
+                  setIsLoading(true);
+                }}
+              >
+                Login
+              </button>
+            )}
+            {isLoading && (
+              <div className='ml-[10rem]'>
+                <PropagateLoader
+                  speedMultiplier={1}
+                  color={'#3b82f6'}
+                  size={15}
+                />
+              </div>
+            )}
 
             {isShowError && (
               <div
