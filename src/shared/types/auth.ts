@@ -15,7 +15,7 @@ export interface AuthResponse {
   data: {
     message: string;
     status: string;
-    fullName?: string;
+    fullname?: string;
     token: string;
   };
 }

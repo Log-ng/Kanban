@@ -1,11 +1,11 @@
 import React from 'react';
 import Login from './pages/login';
 import { Routes, Route } from 'react-router-dom';
-import NotFoundPage from './pages/not.found';
-import SignUp from './pages/sign.up';
+import NotFoundPage from './pages/notFound';
+import SignUp from './pages/signUp';
 import Home from './pages/home';
 import { AnimatePresence } from 'framer-motion';
-import { appRouters } from 'shared/url.resources';
+import { appRouters } from 'shared/urlResources';
 import Main from 'pages/main';
 
 const App = () => {

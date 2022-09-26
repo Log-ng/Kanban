@@ -1,6 +1,7 @@
 <?php
 
 header('Access-Control-Allow-Origin: *');
+header("Access-Control-Allow-Headers: *");
 header('Content-Type: application/json');
 header('Access-Control-Allow-Methods: POST');
 header('Access-Control-Allow-Headers: Access-Control-Allow-Headers, Content-Type, Access-Control-Allow-Methods, Authorization, X-Requested-With');
@@ -16,7 +17,6 @@ $user = new User($db);
 $token = new Token($db);
 
 $data = json_decode(file_get_contents("php://input"));
-
 
 $user->username = $data->username;
 $user->password = $data->password;
@@ -37,7 +37,7 @@ if($checkUser) {
     array(
       'message' => 'Login successful.',
       'status' => 'Success',
-      'fullName' => $checkUser,
+      'fullname' => $checkUser,
       'token' => $jwt
     )
   );

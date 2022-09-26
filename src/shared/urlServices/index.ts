@@ -1,5 +1,5 @@
 import myAxios from 'axios';
-import { appRouters } from 'shared/url.resources';
+import { appRouters } from 'shared/urlResources';
 
 export const LOGIN_API = `http://localhost/Kanban/server/controllers/user/login/index.php`;
 
