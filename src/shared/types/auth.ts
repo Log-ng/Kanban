@@ -3,7 +3,7 @@ import { User } from './user';
 export interface AuthState {
   isLoggedIn: boolean;
   logging?: boolean;
-  currentUser?: User;
+  currentUser: User;
 }
 
 export interface UserLogin {
@@ -19,3 +19,4 @@ export interface AuthResponse {
     token: string;
   };
 }
+

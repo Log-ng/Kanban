@@ -11,4 +11,10 @@
   .button-next {
     @apply transition bg-blue-500 hover:bg-blue-400 text-white font-bold px-4 py-6 border-b-4 border-blue-700 hover:border-blue-500 rounded-full w-48 mt-20;
   }
+  .user-fullname {
+    @apply col-start-6 w-full block text-white text-xl font-bold rounded m-auto text-right;
+  }
+  .dropdown-fullname {
+    @apply text-colorHome text-xl font-bold absolute right-0 z-10 mt-2 w-56 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none cursor-pointer;
+  }
 }
