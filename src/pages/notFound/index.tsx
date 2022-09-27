@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { appRouters } from 'shared/url.resources';
+import { appRouters } from 'shared/urlResources';
 
 const NotFoundPage: React.FC = () => {
   return (

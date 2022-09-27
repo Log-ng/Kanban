@@ -1,7 +1,7 @@
-import { LOGIN_API } from './../../shared/url.services/index';
+import { LOGIN_API } from '../../shared/urlServices/index';
 
 import { UserLogin, AuthResponse } from './../../shared/types/auth';
-import { myAxios } from 'shared/url.services';
+import { myAxios } from 'shared/urlServices';
 
 export const authLogin = (userLogin: UserLogin): Promise<AuthResponse> => {
   return myAxios.post(LOGIN_API, userLogin);

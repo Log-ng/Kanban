@@ -1,5 +1,5 @@
 import React from 'react';
-import InputForm from '../../components/sign.up.input';
+import InputForm from '../../components/signUpInput';
 import { FaArrowRight } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';

@@ -2,11 +2,11 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { useMyDispatch } from 'redux/hooks';
-import { appRouters } from 'shared/url.resources';
+import { appRouters } from 'shared/urlResources';
 import { UserLogin } from 'shared/types/auth';
 import { authLogin } from './services';
 import { loginSuccess } from 'redux/authSlice';
-import { errorList } from './error.list';
+import { errorList } from './errorList';
 import PropagateLoader from 'react-spinners/PropagateLoader';
 
 const Login: React.FC = () => {
@@ -26,7 +26,7 @@ const Login: React.FC = () => {
         dispatch(
           loginSuccess({
             username: userLogin.username,
-            fullName: response.data.fullName,
+            fullname: response.data.fullname,
           })
         );
         localStorage.setItem('token', response.data.token)
