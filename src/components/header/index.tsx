@@ -1,14 +1,30 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { BsFillKanbanFill } from 'react-icons/bs';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { appRouters } from 'shared/urlResources';
-import { useMySelector } from 'redux/hooks';
+import { useMyDispatch, useMySelector } from 'redux/hooks';
+import { FiSettings } from 'react-icons/fi';
+import { logoutLocal } from 'redux/authSlice';
+import { logout } from './services';
 
 const Header: React.FC = () => {
-  const isLogin = useMySelector((stata) => stata.auth.isLoggedIn);
-  const fullname = useMySelector((stata) => stata.auth.currentUser?.fullname);
+  const navigation = useNavigate();
+  const dispatch = useMyDispatch();
+  
+  const isLogin = useMySelector((state) => state.auth.isLoggedIn);
+  const fullname = useMySelector((state) => state.auth.currentUser?.fullname);
+  const username = useMySelector(state => state.auth.currentUser.username);
+
+  const handleLogout = () => {    
+    logout({ username });
+    localStorage.clear();
+    dispatch(logoutLocal());
+    navigation(appRouters.LINK_TO_HOME_PAGE);
+  };
+
+  const [isDropdonw, setIsDropdonw] = useState<boolean>(false);
   return (
-    <nav className='grid grid-cols-7 gap-4 bg-colorHome p-6 mb-1 rounded-md'>
+    <nav className='grid grid-cols-7 gap-4 bg-colorHome p-6 mb-1 rounded-md max-h-17'>
       <Link to={`/${appRouters.LINK_TO_HOME_PAGE}`} className='col-span-1 '>
         <div className='flex items-center text-white transition hover:scale-105'>
           <BsFillKanbanFill className='mr-3' size={30} />
@@ -37,8 +53,46 @@ const Header: React.FC = () => {
       )}
 
       {isLogin && (
-        <div className='bg-white col-start-6 w-full block flex-grow lg:flex lg:items-center lg:w-auto text-colorHome text-xl font-bold rounded m-auto p-1 px-7'>
+        <div className='user-fullname w-[335px] h-[38px] overflow-clip col-start-5 col-end-7 pt-1'>
           {fullname}
+        </div>
+      )}
+
+      {isLogin && (
+        <div className='col-start-7'>
+          <div className='relative inline-block text-left'>
+            <div>
+              <button
+                className='inline-flex w-full justify-center px-2 pr-3 py-1 pt-[0.4rem] text-sm hover:scale-125 transition'
+                onClick={() => setIsDropdonw(!isDropdonw)}
+              >
+                <svg className='-mr-1 ml-2 h-7 w-7' viewBox='0 0 30 30'>
+                  <FiSettings size={30} color='white' />
+                </svg>
+              </button>
+            </div>
+          </div>
+          <div
+            className={
+              'dropdown-fullname divide-y ' + (!isDropdonw ? 'hidden' : '')
+            }
+          >
+            <div className='py-1'>
+              <div className='text-gray-700 block px-4 py-2 text-sm hover:bg-slate-100'>
+                My projects
+              </div>
+            </div>
+            <div className='py-1'>
+              <div className='text-gray-700 block px-4 py-2 text-sm hover:bg-slate-100'>
+                My profile
+              </div>
+            </div>
+            <div className='py-1' onClick={handleLogout}>
+              <div className='text-gray-700 block px-4 py-2 text-sm hover:bg-slate-100 rounded-md'>
+                Logout
+              </div>
+            </div>
+          </div>
         </div>
       )}
     </nav>

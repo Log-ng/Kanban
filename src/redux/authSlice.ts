@@ -4,7 +4,10 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 const initialState: AuthState = {
   isLoggedIn: false,
-  currentUser: undefined,
+  currentUser: {
+    username: '',
+    fullname: ''
+  },
 };
 
 export const authSlice = createSlice({
@@ -19,12 +22,15 @@ export const authSlice = createSlice({
       state.isLoggedIn = false;
     },
 
-    logout(state) {
+    logoutLocal(state) {
       state.isLoggedIn = false;
-      state.currentUser = undefined;
+      state.currentUser = {
+        username: '',
+        fullname: '',
+      };
     },
   },
 });
 
-export const { loginSuccess, loginFailed, logout } = authSlice.actions;
+export const { loginSuccess, loginFailed, logoutLocal } = authSlice.actions;
 export default authSlice.reducer;
