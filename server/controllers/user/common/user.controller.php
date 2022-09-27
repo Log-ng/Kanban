@@ -45,6 +45,12 @@ class UserController {
         ;
     }
 
+    public function deleteToken($username) {
+        $username = htmlspecialchars($username);
+        $this->tokenModel->deleteAllOldToken($username);
+        
+    }
+
                 
 }
 
