@@ -1,16 +1,12 @@
 <?php
 
-include_once '../../../models/user.model.php';
-include_once '../../../models/token.model.php';
-include_once '../../../base.classes/core/database.php';
+// include_once('../baseController.php');
 
-class UserController {
+include_once('../baseController.php');
 
-    public function __construct($db) {
-        $this->conn = $db;
-        $this->userModel = new User($db);
-        $this->tokenModel = new Token($db);
-        $this->database = new Database();
+class UserController extends BaseController {
+    public function __construct () {
+        parent::__construct();
     }
 
     public function authLogin($username, $password) {
@@ -45,13 +41,9 @@ class UserController {
         ;
     }
 
-    public function deleteToken($username) {
+    public function logout($username) {
         $username = htmlspecialchars($username);
         $this->tokenModel->deleteAllOldToken($username);
         
     }
-
-                
 }
-
-

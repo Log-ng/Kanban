@@ -2,12 +2,17 @@ import Header from 'components/header';
 import React from 'react';
 import { useMySelector } from 'redux/hooks';
 import IMAGE_AVATAR from './avatar.jpg';
+import { motion } from 'framer-motion';
 
 const Profile: React.FC = () => {
   const username = useMySelector((state) => state.auth.currentUser.username);
   const fullname = useMySelector((state) => state.auth.currentUser.fullname);
   return (
     <div className='scale-x-95'>
+      <motion.div
+      initial={{ x: '100px', opacity: 0 }}
+      animate={{ x: 0, opacity: 1 }}
+    >
       <Header />
       <div className='grid grid-cols-2'>
         <div className='flex justify-end mr-12 pt-5'>
@@ -28,7 +33,9 @@ const Profile: React.FC = () => {
           </div>
         </div>
       </div>
+    </motion.div>
     </div>
+    
   );
 };
 

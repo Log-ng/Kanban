@@ -1,6 +1,7 @@
 <?php
 
-require '../../../vendor/autoload.php';
+// require '../../../vendor/autoload.php';
+require '../../vendor/autoload.php';
 use Dotenv\Dotenv;
 use \Firebase\JWT\JWT;
 $dotenv = Dotenv::createImmutable(__DIR__);
