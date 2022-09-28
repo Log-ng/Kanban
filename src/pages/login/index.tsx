@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { useMyDispatch } from 'redux/hooks';
+import { useMyDispatch, useMySelector } from 'redux/hooks';
 import { appRouters } from 'shared/urlResources';
 import { UserLogin } from 'shared/types/auth';
 import { authLogin } from './services';
@@ -10,15 +10,23 @@ import { errorList } from './errorList';
 import PropagateLoader from 'react-spinners/PropagateLoader';
 
 const Login: React.FC = () => {
+
   const navigate = useNavigate();
+  const dispatch = useMyDispatch();
   const [userLogin, setUserLogin] = useState<UserLogin>({
     username: '',
     password: '',
   });
   const [isShowError, setIsShowError] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  
+  const isLogin = useMySelector((state) => state.auth.isLoggedIn);
+  useEffect(() => {
+    if (isLogin) navigate(`/${appRouters.LINK_TO_MAIN_PAGE}`);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  },[])
+  
 
-  const dispatch = useMyDispatch();
 
   const onClickLoginButton = () => {
     authLogin(userLogin).then((response) => {
@@ -29,7 +37,11 @@ const Login: React.FC = () => {
             fullname: response.data.fullname,
           })
         );
-        localStorage.setItem('token', response.data.token)
+        
+        localStorage.setItem('token', response.data.token);
+        localStorage.setItem('username', userLogin.username);
+        localStorage.setItem('fullname', response.data.fullname ?? '');
+
         navigate(`/${appRouters.LINK_TO_MAIN_PAGE}`);
       }
       setIsShowError(true);

@@ -1,7 +1,18 @@
-import React from 'react';
+import React, { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useMySelector } from 'redux/hooks';
+import { appRouters } from 'shared/urlResources';
 import Header from '../../components/header';
 
 const Home: React.FC = () => {
+    const isLogin = useMySelector((state) => state.auth.isLoggedIn);
+    const navigate = useNavigate();
+
+    useEffect(() => {
+      if (isLogin) navigate(`/${appRouters.LINK_TO_MAIN_PAGE}`);
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
+    
   return (
     <div className='scale-x-95'>
       <Header />
