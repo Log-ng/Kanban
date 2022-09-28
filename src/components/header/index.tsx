@@ -10,12 +10,12 @@ import { logout } from './services';
 const Header: React.FC = () => {
   const navigation = useNavigate();
   const dispatch = useMyDispatch();
-  
+
   const isLogin = useMySelector((state) => state.auth.isLoggedIn);
   const fullname = useMySelector((state) => state.auth.currentUser?.fullname);
-  const username = useMySelector(state => state.auth.currentUser.username);
+  const username = useMySelector((state) => state.auth.currentUser.username);
 
-  const handleLogout = () => {    
+  const handleLogout = () => {
     logout({ username });
     localStorage.clear();
     dispatch(logoutLocal());
@@ -53,7 +53,12 @@ const Header: React.FC = () => {
       )}
 
       {isLogin && (
-        <div className='user-fullname w-[335px] h-[38px] overflow-clip col-start-5 col-end-7 pt-1'>
+        <div className='user-fullname w-[335px] h-[44px] overflow-clip col-start-5 col-end-7 pt-1'>
+          <img
+            className='p-1 w-9 h-9 rounded-full ring-2 ring-gray-300 dark:ring-gray-500 inline-block mr-2'
+            src='https://media.istockphoto.com/vectors/three-persons-icon-black-vector-vector-id1158561473?k=20&m=1158561473&s=612x612&w=0&h=pSRNS3mkeYMYcleK_Pzf89gnkVQuxtiSGMm4yll-UXg='
+            alt='Bordered avatar'
+          ></img>
           {fullname}
         </div>
       )}
@@ -77,12 +82,18 @@ const Header: React.FC = () => {
               'dropdown-fullname divide-y ' + (!isDropdonw ? 'hidden' : '')
             }
           >
-            <div className='py-1'>
+            <div
+              className='py-1'
+              onClick={() => navigation(`/${appRouters.LINK_TO_MAIN_PAGE}`)}
+            >
               <div className='text-gray-700 block px-4 py-2 text-sm hover:bg-slate-100'>
                 My projects
               </div>
             </div>
-            <div className='py-1'>
+            <div
+              className='py-1'
+              onClick={() => navigation(`/${appRouters.LINK_TO_PROFILE_PAGE}`)}
+            >
               <div className='text-gray-700 block px-4 py-2 text-sm hover:bg-slate-100'>
                 My profile
               </div>

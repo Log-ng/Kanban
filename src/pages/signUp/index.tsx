@@ -1,10 +1,19 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import InputForm from '../../components/signUpInput';
 import { FaArrowRight } from 'react-icons/fa';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
+import { useMySelector } from 'redux/hooks';
+import { appRouters } from 'shared/urlResources';
 
 const SignUp: React.FC = () => {
+    const isLogin = useMySelector((state) => state.auth.isLoggedIn);
+    const navigate = useNavigate();
+
+    useEffect(() => {
+      if (isLogin) navigate(`/${appRouters.LINK_TO_MAIN_PAGE}`);
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
   return (
     <motion.div
       initial={{ y: '400px', opacity: 0 }}
