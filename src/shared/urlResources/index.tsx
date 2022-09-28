@@ -3,5 +3,6 @@ export const appRouters = {
   LINK_TO_LOGIN_PAGE: 'login',
   LINK_TO_MAIN_PAGE: 'main',
   LINK_TO_SIGN_UP_PAGE: 'signup',
+  LINK_TO_PROFILE_PAGE: 'profile',
 };
 

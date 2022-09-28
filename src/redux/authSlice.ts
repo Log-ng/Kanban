@@ -3,10 +3,10 @@ import { User } from 'shared/types/user';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 const initialState: AuthState = {
-  isLoggedIn: false,
+  isLoggedIn: localStorage.getItem('token') ? true: false,
   currentUser: {
-    username: '',
-    fullname: ''
+    username: localStorage.getItem('username') ?? '',
+    fullname: localStorage.getItem('fullname') ?? '',
   },
 };
 
@@ -14,6 +14,7 @@ export const authSlice = createSlice({
   name: 'auth',
   initialState,
   reducers: {
+
     loginSuccess(state, action: PayloadAction<User>) {
       state.isLoggedIn = true;
       state.currentUser = action.payload;
