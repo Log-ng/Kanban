@@ -1,8 +1,8 @@
 <?php
 
-include_once '../../models/user.model.php';
-include_once '../../models/token.model.php';
-include_once '../../base.classes/core/database.php';
+include_once './models/user.model.php';
+include_once './models/token.model.php';
+include_once './base.classes/core/database.php';
 
 class BaseController {
 

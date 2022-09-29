@@ -6,24 +6,31 @@ header('Access-Control-Allow-Methods: POST');
 header('Access-Control-Allow-Headers: Access-Control-Allow-Headers, Content-Type, Access-Control-Allow-Methods, Authorization, X-Requested-With');
 
 $data = json_decode(file_get_contents("php://input"));
+include_once './controllers/userController.php';
 
 $controller = $data->controller;
 switch ($controller) {
     case 'login':
+        $userController = new UserController();
         $username = $data->username;
         $password = $data->password;
-        header("Location: ./controllers/user/login.php?username=".$username."&password=".$password); 
+        echo $userController->authLogin($username, $password);
         break;
+
     case 'logout':
+        $userController = new UserController();
         $username = $data->username;
-        header("Location: ./controllers/user/logout.php?username=".$username); 
+        $userController->logout($username);
         break;
+
     case 'signUp':
+        $userController = new UserController();
         $username = $data->username;
         $password = $data->password;
         $fullname = $data->fullname;
-        header("Location: ./controllers/user/signUp.php?username=".$username."&password=".$password."&fullname=".$fullname); 
+        echo $userController->signUp($username, $password, $fullname);
         break;
+        
     default:
         echo "Not match any path!";
 }

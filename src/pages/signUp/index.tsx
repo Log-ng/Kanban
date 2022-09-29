@@ -37,7 +37,6 @@ const SignUp: React.FC = () => {
         password: userSignUp.password,
         fullname: userSignUp.fullname
       }).then((response) => {
-        console.log(response);
         if (response.data.status === 'Success') {
           navigate(`/${appRouters.LINK_TO_LOGIN_PAGE}`);
           return;
