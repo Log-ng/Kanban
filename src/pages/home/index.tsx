@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useMySelector } from 'redux/hooks';
 import { appRouters } from 'shared/urlResources';
 import Header from '../../components/header';
+import { motion } from 'framer-motion';
 
 const Home: React.FC = () => {
     const isLogin = useMySelector((state) => state.auth.isLoggedIn);
@@ -16,7 +17,12 @@ const Home: React.FC = () => {
   return (
     <div className='scale-x-95'>
       <Header />
-      <div className='bg-office-home h-[85vh] bg-cover bg-center bg-fixed rounded-t-md pt-24'>
+      <motion.div
+        className='bg-office-home h-[85vh] bg-cover bg-center bg-fixed rounded-t-md pt-24'
+        initial={{ opacity: 0 }}
+        whileInView={{ opacity: 1 }}
+        viewport={{ once: true }}
+      >
         <div className='text-white text-6xl tracking-widest font-semibold uppercase pl-6'>
           Welcome to Kanban!
         </div>
@@ -26,7 +32,7 @@ const Home: React.FC = () => {
         <div className='text-teal-200 text-3xl tracking-widest font-semibold uppercase pl-6 mt-7'>
           getting started
         </div>
-      </div>
+      </motion.div>
     </div>
   );
 };

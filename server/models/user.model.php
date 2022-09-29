@@ -16,6 +16,7 @@ class User {
         $this->username = htmlspecialchars(strip_tags($this->username));
         $this->password = htmlspecialchars(strip_tags($this->password));
         $this->fullname = htmlspecialchars(strip_tags($this->fullname));
+        $this->password = password_hash($this->password, PASSWORD_DEFAULT);
 
         $stmt = $this->conn->prepare($query);
         
@@ -23,7 +24,7 @@ class User {
         $stmt->bindParam(2, $this->password);
         $stmt->bindParam(3, $this->fullname);
 
-        return $stmt->execute();
+        $stmt->execute();
     }
     
     public function read() {
@@ -34,11 +35,11 @@ class User {
     }
 
     public function validate() {
-        $validateFullname = strlen($this->fullname) >= 3 and strlen($this->fullname) <= 30;
-        $validateusername= strlen($this->username) >= 3 and strlen($this->fullname) <= 10;
-        $validatePassword = strlen($this->password) >= 2 and strlen($this->fullname) <= 8;
+        $validateFullname = strlen($this->fullname) >= 4 and strlen($this->fullname) <= 30;
+        $validateUsername= strlen($this->username) >= 4 and strlen($this->username) <= 30;
+        $validatePassword = strlen($this->password) >= 2 and strlen($this->password) <= 20;
 
-        return $validateFullname and $validateusername and $validatePassword;
+        return ($validateFullname and $validateUsername and $validatePassword);
     }
 
     public function checkUsername() {
@@ -48,6 +49,7 @@ class User {
 
         $stmt->execute([$this->username]);
         $user = $stmt->fetch();
+        
         return ! $user;
     }
 
@@ -72,6 +74,4 @@ class User {
         }
         return false;
     }
-
-    
 }

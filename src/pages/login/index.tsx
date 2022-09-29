@@ -3,19 +3,21 @@ import { Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { useMyDispatch, useMySelector } from 'redux/hooks';
 import { appRouters } from 'shared/urlResources';
-import { UserLogin } from 'shared/types/auth';
+import { AuthRequest } from 'shared/types/auth';
 import { authLogin } from './services';
 import { loginSuccess } from 'redux/authSlice';
 import { errorList } from './errorList';
 import PropagateLoader from 'react-spinners/PropagateLoader';
+import { CONTROLLER_LOGIN } from 'shared/urlServices';
 
 const Login: React.FC = () => {
 
   const navigate = useNavigate();
   const dispatch = useMyDispatch();
-  const [userLogin, setUserLogin] = useState<UserLogin>({
+  const [userLogin, setUserLogin] = useState<AuthRequest>({
     username: '',
     password: '',
+    controller: CONTROLLER_LOGIN,
   });
   const [isShowError, setIsShowError] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
