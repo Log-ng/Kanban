@@ -1,8 +1,8 @@
-import { User } from 'shared/types/user';
-import { LOGOUT_API } from '../../shared/urlServices/index';
+import { URL_API } from '../../shared/urlServices/index';
 
 import { myAxios } from 'shared/urlServices';
+import { LogoutRequest } from 'shared/types/auth';
 
-export const logout = (user: User) => {
-  myAxios.post(LOGOUT_API, user)
+export const logout = (user: LogoutRequest) => {
+  myAxios.post(URL_API, user);
 };
