@@ -1,6 +1,7 @@
 export const errorList = {
   usernameError: 'Username must be in 4 - 30 characters',
-  fullnameError: 'Username must be in 4 - 30 characters',
-  passwordError: 'Username must be in 5 - 20 characters',
-  passwordUnmatched: 'Password did not match confirmation!',
+  fullnameError: 'Fullname must be in 4 - 30 characters',
+  passwordError: 'Password must be in 2 - 20 characters',
+  passwordUnmatched: 'Password did not match confirmation !',
+  usernameExist: 'Username already exists !',
 };

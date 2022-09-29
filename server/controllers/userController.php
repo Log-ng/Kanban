@@ -1,7 +1,5 @@
 <?php
 
-// include_once('../baseController.php');
-
 include_once('../baseController.php');
 
 class UserController extends BaseController {
@@ -30,10 +28,8 @@ class UserController extends BaseController {
                 'status' => 'Success',
                 'fullname' => $checkUser,
                 'token' => $jwt
-                );
-            
+                );   
         }
-
         return array(
             'message' => 'Login failed.', 
             'status' => 'Fail',
@@ -43,7 +39,28 @@ class UserController extends BaseController {
 
     public function logout($username) {
         $username = htmlspecialchars($username);
-        $this->tokenModel->deleteAllOldToken($username);
-        
+        $this->tokenModel->deleteAllOldToken($username);  
+    }
+
+    public function signUp($username, $password, $fullname) {
+
+        $this->userModel->username = htmlspecialchars($username);
+        $this->userModel->password = htmlspecialchars($password);
+        $this->userModel->fullname = htmlspecialchars($fullname);
+
+        if($this->userModel->checkUsername() and $this->userModel->validate()) {
+            $this->userModel->create();
+            return array (
+                'message' => 'Sign up completed!', 
+                'status' => 'Success',
+            );
+        }
+        else {
+            return array (
+                'message' => 'Sign up failed.', 
+                'status' => 'Fail',
+            );      
+        }
+
     }
 }

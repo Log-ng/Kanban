@@ -6,6 +6,7 @@ import { useMyDispatch, useMySelector } from 'redux/hooks';
 import { FiSettings } from 'react-icons/fi';
 import { logoutLocal } from 'redux/authSlice';
 import { logout } from './services';
+import { CONTROLLER_LOGOUT } from 'shared/urlServices';
 
 const Header: React.FC = () => {
   const navigation = useNavigate();
@@ -16,7 +17,7 @@ const Header: React.FC = () => {
   const username = useMySelector((state) => state.auth.currentUser.username);
 
   const handleLogout = () => {
-    logout({ username });
+    logout({ username, controller: CONTROLLER_LOGOUT });
     localStorage.clear();
     dispatch(logoutLocal());
     navigation(appRouters.LINK_TO_HOME_PAGE);
@@ -25,7 +26,7 @@ const Header: React.FC = () => {
   const [isDropdonw, setIsDropdonw] = useState<boolean>(false);
   return (
     <nav className='grid grid-cols-7 gap-4 bg-colorHome p-6 mb-1 rounded-md max-h-17'>
-      <Link to={`/${appRouters.LINK_TO_HOME_PAGE}`} className='col-span-1 '>
+      <Link to={`/${appRouters.LINK_TO_MAIN_PAGE}`} className='col-span-1 '>
         <div className='flex items-center text-white transition hover:scale-105'>
           <BsFillKanbanFill className='mr-3' size={30} />
           <span className='font-semibold text-xl tracking-tight'>Kanban</span>

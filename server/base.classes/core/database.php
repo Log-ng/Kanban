@@ -1,6 +1,5 @@
 <?php
 
-// require '../../../vendor/autoload.php';
 require '../../vendor/autoload.php';
 use Dotenv\Dotenv;
 use \Firebase\JWT\JWT;
@@ -52,6 +51,5 @@ class Database {
             $secretKey, 
             'HS256'   
         );   
-        
     }
 }

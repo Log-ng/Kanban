@@ -5,5 +5,7 @@ export interface User {
 }
 
 export interface UserSignUp extends User {
-  passwordConfirm: string
+  passwordConfirm: string;
+  fullname: string;
+  password: string;
 }

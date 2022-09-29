@@ -16,11 +16,11 @@ const Main: React.FC = () => {
 
   return (
     <div className='scale-x-95'>
+      <Header />
       <motion.div
         initial={{ x: '-100px', opacity: 0 }}
         animate={{ x: 0, opacity: 1 }}
       >
-        <Header />
         <div></div>
       </motion.div>
     </div>

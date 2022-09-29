@@ -6,9 +6,11 @@ export interface AuthState {
   currentUser: User;
 }
 
-export interface UserLogin {
+export interface AuthRequest {
   username: string;
   password: string;
+  fullname?: string;
+  controller: string;
 }
 
 export interface AuthResponse {
@@ -20,3 +22,18 @@ export interface AuthResponse {
   };
 }
 
+export interface LogoutRequest {
+  username: string;
+  controller: string;
+}
+export interface SignUpRequest {
+  username: string;
+  controller: string;
+}
+
+export interface SignUpResponse {
+  data: {
+    message: string;
+    status: string;
+  };
+}
