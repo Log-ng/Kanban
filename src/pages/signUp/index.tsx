@@ -13,7 +13,7 @@ import { CONTROLLER_SIGNUP } from 'shared/urlServices';
 const SignUp: React.FC = () => {
   const isLogin = useMySelector((state) => state.auth.isLoggedIn);
   const navigate = useNavigate();
-  
+
   const [isShowError, setIsShowError] = useState<boolean>(false);
   const [isExist, setIsExist] = useState<boolean>(false);
   const [userSignUp, setUserSignUp] = useState<UserSignUp>({
@@ -22,20 +22,25 @@ const SignUp: React.FC = () => {
     fullname: '',
     passwordConfirm: '',
   });
-  
-  const validUsername = userSignUp.username.length >= 4 && userSignUp.username.length <= 30;
-  const validFullname = userSignUp.fullname?.length >= 4 && userSignUp.fullname?.length <= 30;
-  const validPassword = userSignUp.password?.length >= 2 && userSignUp.password?.length <= 20;
-  const matchPassword = userSignUp.password.localeCompare(userSignUp.passwordConfirm) === 0? true: false;
+
+  const validUsername =
+    userSignUp.username.length >= 4 && userSignUp.username.length <= 30;
+  const validFullname =
+    userSignUp.fullname?.length >= 4 && userSignUp.fullname?.length <= 30;
+  const validPassword =
+    userSignUp.password?.length >= 2 && userSignUp.password?.length <= 20;
+  const matchPassword =
+    userSignUp.password.localeCompare(userSignUp.passwordConfirm) === 0
+      ? true
+      : false;
 
   const onNext = () => {
-    if(validUsername && validFullname && validPassword && matchPassword) {
-      
+    if (validUsername && validFullname && validPassword && matchPassword) {
       signUp({
         controller: CONTROLLER_SIGNUP,
         username: userSignUp.username,
         password: userSignUp.password,
-        fullname: userSignUp.fullname
+        fullname: userSignUp.fullname,
       }).then((response) => {
         if (response.data.status === 'Success') {
           navigate(`/${appRouters.LINK_TO_LOGIN_PAGE}`);
@@ -44,8 +49,7 @@ const SignUp: React.FC = () => {
         setIsShowError(true);
         setIsExist(true);
       });
-    }
-    else setIsShowError(true);
+    } else setIsShowError(true);
   };
 
   const getUserInfo = (type: string, value: string): void => {
@@ -138,7 +142,7 @@ const SignUp: React.FC = () => {
                     <span className='font-medium'>
                       Something wasn't right !!!
                     </span>
-                    <ul className='mt-1.5 text-red-700 list-disc list-inside'>  
+                    <ul className='mt-1.5 text-red-700 list-disc list-inside'>
                       {isExist && <li>{errorList.usernameExist}</li>}
                       {!validUsername && <li>{errorList.usernameError}</li>}
                       {!validFullname && <li>{errorList.fullnameError}</li>}
