@@ -10,15 +10,11 @@
     "@types/jest": "^27.0.1",
     "@types/node": "^16.7.13",
     "@types/react": "^18.0.0",
-    "@types/react-beautiful-dnd": "^13.1.2",
     "@types/react-custom-scrollbars": "^4.0.10",
     "@types/react-dom": "^18.0.0",
     "axios": "^0.27.2",
     "framer-motion": "^7.3.6",
-    "patch-package": "^6.4.7",
-    "postinstall-postinstall": "^2.1.0",
     "react": "^18.2.0",
-    "react-beautiful-dnd": "^13.1.1",
     "react-custom-scrollbars": "^4.2.1",
     "react-dom": "^18.2.0",
     "react-icons": "^4.4.0",
@@ -35,7 +31,6 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "postinstall": "npx patch-package",
     "eject": "react-scripts eject"
   },
   "eslintConfig": {
