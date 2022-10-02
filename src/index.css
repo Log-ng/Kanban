@@ -17,4 +17,10 @@
   .dropdown-fullname {
     @apply text-colorHome text-xl font-bold absolute right-0 z-10 mt-2 w-56 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none cursor-pointer;
   }
+  .add-new-column {
+    @apply border border-[#ebecf0] border-spacing-1 flex px-5 pt-2 py-3 cursor-pointer items-center bg-[rgba(188,180,216,0.95)] hover:bg-[#C9CCD9] transition-all shadow-lg hover:scale-105 rounded mt-1 h-[35px]
+  }
+  .button-add-new-clomn-form {
+    @apply bg-[#68589b] hover:bg-[#48367F] text-white font-medium py-[6px] px-3 border border-[#68589b] rounded mt-2 transition-all hover:scale-105
+  }
 }
