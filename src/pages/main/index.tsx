@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { useMySelector } from 'redux/hooks';
 import { appRouters } from 'shared/urlResources';
 import { motion } from 'framer-motion';
+import Kanban from 'components/kanban';
 
 const Main: React.FC = () => {
   const isLogin = useMySelector((state) => state.auth.isLoggedIn);
@@ -21,7 +22,9 @@ const Main: React.FC = () => {
         initial={{ x: '-100px', opacity: 0 }}
         animate={{ x: 0, opacity: 1 }}
       >
-        <div></div>
+        <div>
+          <Kanban/>
+        </div>
       </motion.div>
     </div>
   );
