@@ -87,24 +87,24 @@ export const mockData = {
       id: 'column-2',
       boardId: 'board-1',
       title: 'Doing',
-      cardOrder: ['card-4', 'card-5', 'card-6'],
+      cardOrder: ['card-44', 'card-55', 'card-66'],
       cards: [
         {
-          id: 'card-4',
+          id: 'card-44',
           boardId: 'board-1',
           columnId: 'column-2',
           title: 'Research 4',
           description: 'Long',
         },
         {
-          id: 'card-5',
+          id: 'card-55',
           boardId: 'board-1',
           columnId: 'column-2',
           title: 'Research 5',
           description: 'Long',
         },
         {
-          id: 'card-6',
+          id: 'card-66',
           boardId: 'board-1',
           columnId: 'column-2',
           title: 'Research 6',

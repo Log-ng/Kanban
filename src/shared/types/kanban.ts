@@ -19,3 +19,10 @@ export interface BoardType {
   columnOrder: String[];
   columns: ColumnType[];
 }
+
+  export interface DropResult {
+    removedIndex: number;
+    addedIndex: number;
+    payload: object;
+    element: HTMLElement;
+  }
