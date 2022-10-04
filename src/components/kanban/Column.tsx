@@ -30,8 +30,6 @@ const Board: React.FC<Props> = (props) => {
     return column.cardOrder.indexOf(a.id) - column.cardOrder.indexOf(b.id);
   });
 
-  // const updateColumn = 
-
   return (
     <div className='w-[272px] bg-[#ebecf0] rounded p-2 mr-4 shadow-lg'>
       <header className='column-drag-handle font-semibold p-2 cursor-pointer underline'>
