@@ -4,5 +4,5 @@ export const containsSpecialChars = (str: string) => {
 }
 
 export const containsOnlyLetters = (str: string) => {
-  return /^[a-zA-Z]+$/.test(str);
+  return /^[a-zA-Z ]+$/.test(str);
 };

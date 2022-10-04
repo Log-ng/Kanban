@@ -27,8 +27,6 @@ const Login: React.FC = () => {
     if (isLogin) navigate(`/${appRouters.LINK_TO_MAIN_PAGE}`);
   },[])
   
-
-
   const onClickLoginButton = () => {
     authLogin(userLogin).then((response) => {
       if (response.data.status === 'Success') {

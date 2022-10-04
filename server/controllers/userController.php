@@ -11,8 +11,8 @@ class UserController extends BaseController {
         $this->userModel->username = htmlspecialchars($username);
         $this->userModel->password = htmlspecialchars($password);
 
-        $checkUser = $this->userModel->authLogin();
-        if($checkUser) {  
+        $isUserValid = $this->userModel->authLogin();
+        if($isUserValid) {  
             $jwt = $this->database->genToken($this->userModel->username);
 
             $this->tokenModel->deleteAllOldToken($this->userModel->username);
@@ -24,7 +24,7 @@ class UserController extends BaseController {
             return json_encode(array(
                 'message' => 'Login successful.',
                 'status' => 'Success',
-                'fullname' => $checkUser,
+                'fullname' => $isUserValid,
                 'token' => $jwt
             ));   
         }
@@ -41,7 +41,7 @@ class UserController extends BaseController {
 
     public function validate($username, $fullname, $password) {
         $usernameContainsSpecialChars = preg_match('/[\'^£$%&*()}{@#~?><>,|=_+¬-]/', $username);
-        $fullnameContainsOnlyLeters = ctype_alpha($fullname);
+        $fullnameContainsOnlyLeters = preg_match('~^[\p{L}\s]+$~uD', $fullname);
         $passwordContainsSpecChars = preg_match('/[\'^£$%&*()}{@#~?><>,|=_+¬-]/', $password);
         
         $isValidateCharacters = !$usernameContainsSpecialChars && $fullnameContainsOnlyLeters && $passwordContainsSpecChars;
