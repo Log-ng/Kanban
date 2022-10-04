@@ -60,10 +60,9 @@ class User {
 
         $stmt->execute([$this->username]);
         $user = $stmt->fetch(PDO::FETCH_ASSOC);
-        if ($user) {
-            if(password_verify($this->password, $user['password'])) 
-                return $user['fullname'];
-        }
+
+        if(!$user) return false;
+        if(password_verify($this->password, $user['password'])) return $user['fullname'];
         return false;
     }
 }

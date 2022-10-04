@@ -20,7 +20,8 @@ const Board: React.FC<Props> = (props) => {
   const inputTitleRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
-    if (inputTitleRef && inputTitleRef.current) {
+    const isInputAdded = inputTitleRef && inputTitleRef.current;
+    if (isInputAdded) {
       inputTitleRef.current.focus();
     }
   }, [isUpdateTitle]);
@@ -28,8 +29,6 @@ const Board: React.FC<Props> = (props) => {
   column.cards.sort((a: CardType, b: CardType) => {
     return column.cardOrder.indexOf(a.id) - column.cardOrder.indexOf(b.id);
   });
-
-  // const updateColumn = 
 
   return (
     <div className='w-[272px] bg-[#ebecf0] rounded p-2 mr-4 shadow-lg'>
