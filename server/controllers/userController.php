@@ -41,7 +41,7 @@ class UserController extends BaseController {
 
     public function validate($username, $fullname, $password) {
         $usernameContainsSpecialChars = preg_match('/[\'^£$%&*()}{@#~?><>,|=_+¬-]/', $username);
-        $fullnameContainsOnlyLeters = ctype_alpha($fullname);
+        $fullnameContainsOnlyLeters = preg_match('~^[\p{L}\s]+$~uD', $fullname);
         $passwordContainsSpecChars = preg_match('/[\'^£$%&*()}{@#~?><>,|=_+¬-]/', $password);
         
         $isValidateCharacters = !$usernameContainsSpecialChars && $fullnameContainsOnlyLeters && $passwordContainsSpecChars;
