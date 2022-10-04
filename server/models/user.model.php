@@ -34,14 +34,6 @@ class User {
         return $stmt;
     }
 
-    public function validate() {
-        $validateFullname = strlen($this->fullname) >= 4 and strlen($this->fullname) <= 30;
-        $validateUsername= strlen($this->username) >= 4 and strlen($this->username) <= 30;
-        $validatePassword = strlen($this->password) >= 2 and strlen($this->password) <= 20;
-
-        return ($validateFullname and $validateUsername and $validatePassword);
-    }
-
     public function checkUsername() {
 
         $query = 'SELECT username FROM ' . $this->table . ' WHERE username=?';

@@ -12,7 +12,6 @@ const Main: React.FC = () => {
 
   useEffect(() => {
     if (!isLogin) navigate(`..${appRouters.LINK_TO_HOME_PAGE}`);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (

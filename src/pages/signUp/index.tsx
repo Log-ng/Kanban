@@ -9,6 +9,10 @@ import { UserSignUp } from 'shared/types/user';
 import { errorList } from './errorList';
 import { signUp } from './services';
 import { CONTROLLER_SIGNUP } from 'shared/urlServices';
+import {
+  containsSpecialChars,
+  containsOnlyLetters,
+} from 'shared/utils';
 
 const SignUp: React.FC = () => {
   const isLogin = useMySelector((state) => state.auth.isLoggedIn);
@@ -22,20 +26,23 @@ const SignUp: React.FC = () => {
     fullname: '',
     passwordConfirm: '',
   });
-
+  
   const validUsername =
-    userSignUp.username.length >= 4 && userSignUp.username.length <= 30;
+    userSignUp.username.length >= 4 &&
+    userSignUp.username.length <= 30 && !containsSpecialChars(userSignUp.username);
   const validFullname =
-    userSignUp.fullname?.length >= 4 && userSignUp.fullname?.length <= 30;
+    userSignUp.fullname?.length >= 4 &&
+    userSignUp.fullname?.length <= 30 && containsOnlyLetters(userSignUp.fullname);
   const validPassword =
-    userSignUp.password?.length >= 2 && userSignUp.password?.length <= 20;
-  const matchPassword =
-    userSignUp.password.localeCompare(userSignUp.passwordConfirm) === 0
-      ? true
-      : false;
+    userSignUp.password?.length >= 2 &&
+    userSignUp.password?.length <= 20 &&
+    containsSpecialChars(userSignUp.password);
+  const matchPassword = userSignUp.password.localeCompare(userSignUp.passwordConfirm) === 0 ? true: false;
 
   const onNext = () => {
-    if (validUsername && validFullname && validPassword && matchPassword) {
+    const validateUser = validUsername && validFullname && validPassword && matchPassword;
+
+    if (validateUser) {
       signUp({
         controller: CONTROLLER_SIGNUP,
         username: userSignUp.username,
@@ -84,7 +91,6 @@ const SignUp: React.FC = () => {
 
   useEffect(() => {
     if (isLogin) navigate(`/${appRouters.LINK_TO_MAIN_PAGE}`);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (

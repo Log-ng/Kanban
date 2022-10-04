@@ -39,13 +39,29 @@ class UserController extends BaseController {
         $this->tokenModel->deleteAllOldToken($username);  
     }
 
+    public function validate($username, $fullname, $password) {
+        $usernameContainsSpecialChars = preg_match('/[\'^£$%&*()}{@#~?><>,|=_+¬-]/', $username);
+        $fullnameContainsOnlyLeters = ctype_alpha($fullname);
+        $passwordContainsSpecChars = preg_match('/[\'^£$%&*()}{@#~?><>,|=_+¬-]/', $password);
+        
+        $isValidateCharacters = !$usernameContainsSpecialChars && $fullnameContainsOnlyLeters && $passwordContainsSpecChars;
+        if(!$isValidateCharacters) return false;
+
+        $validateFullname = strlen($fullname) >= 4 and strlen($fullname) <= 30;
+        $validateUsername= strlen($username) >= 4 and strlen($username) <= 30;
+        $validatePassword = strlen($password) >= 2 and strlen($password) <= 20;
+
+        return ($validateFullname and $validateUsername and $validatePassword);
+    }
+
     public function signUp($username, $password, $fullname) {
 
         $this->userModel->username = htmlspecialchars($username);
         $this->userModel->password = htmlspecialchars($password);
         $this->userModel->fullname = htmlspecialchars($fullname);
 
-        if($this->userModel->checkUsername() and $this->userModel->validate()) {
+        $isValidNewUser = $this->userModel->checkUsername() && $this->validate($this->userModel->username, $this->userModel->fullname, $this->userModel->password);
+        if($isValidNewUser) {
             $this->userModel->create();
             return json_encode(array (
                 'message' => 'Sign up completed!', 
@@ -53,9 +69,11 @@ class UserController extends BaseController {
             ));
         } else {
             return json_encode(array (
-                'message' => 'Sign up failed.', 
+                'message' => 'Sign up failed.',
                 'status' => 'Fail',
             ));      
         }
     }
+
+
 }
