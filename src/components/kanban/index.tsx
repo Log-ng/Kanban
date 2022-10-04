@@ -24,7 +24,8 @@ const Kanban: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    if (inputAddRef && inputAddRef.current) {
+    const isInputAdded = inputAddRef && inputAddRef.current;
+    if (isInputAdded) {
       inputAddRef.current.focus();
     }
   }, [isAddNewColumn]);

@@ -20,7 +20,8 @@ const Board: React.FC<Props> = (props) => {
   const inputTitleRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
-    if (inputTitleRef && inputTitleRef.current) {
+    const isInputAdded = inputTitleRef && inputTitleRef.current;
+    if (isInputAdded) {
       inputTitleRef.current.focus();
     }
   }, [isUpdateTitle]);
