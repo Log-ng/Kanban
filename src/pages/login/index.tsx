@@ -25,7 +25,6 @@ const Login: React.FC = () => {
   const isLogin = useMySelector((state) => state.auth.isLoggedIn);
   useEffect(() => {
     if (isLogin) navigate(`/${appRouters.LINK_TO_MAIN_PAGE}`);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   },[])
   
 

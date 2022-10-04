@@ -1,9 +1,11 @@
-import React from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import Card from './Card';
 import { AiOutlinePlus } from 'react-icons/ai';
+import { GrClose } from 'react-icons/gr';
 import { CardType, ColumnType } from 'shared/types/kanban';
 import { Scrollbars } from 'react-custom-scrollbars';
 import { Container, Draggable, DropResult } from 'react-smooth-dnd';
+import { submit } from './utils';
 
 interface Props {
   column: ColumnType;
@@ -12,14 +14,47 @@ interface Props {
 
 const Board: React.FC<Props> = (props) => {
   const { onCardDrop, column } = props;
+
+  const [isUpdateTitle, setIsUpdateTitle] = useState<boolean>(false);
+  const [updateTitle, setUpdateTitle] = useState<string>(column.title);
+  const inputTitleRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    if (inputTitleRef && inputTitleRef.current) {
+      inputTitleRef.current.focus();
+    }
+  }, [isUpdateTitle]);
+
   column.cards.sort((a: CardType, b: CardType) => {
     return column.cardOrder.indexOf(a.id) - column.cardOrder.indexOf(b.id);
   });
 
+  // const updateColumn = 
+
   return (
     <div className='w-[272px] bg-[#ebecf0] rounded p-2 mr-4 shadow-lg'>
       <header className='column-drag-handle font-semibold p-2 cursor-pointer underline'>
-        {column.title}
+        {!isUpdateTitle ? (
+          <div className='grid grid-cols-10'>
+            <div className='col-span-9' onClick={() => setIsUpdateTitle(true)}>
+              {updateTitle}
+            </div>
+            <GrClose
+              onClick={() => submit()}
+              className='mt-[2px] cursor-pointer hover:scale-110 transition-all'
+              size={20}
+            />
+          </div>
+        ) : (
+          <input
+            type='text'
+            className='shadow block p-[3px]  w-full text-gray-900 bg-gray-50 rounded border-[1px] border-[#68589b] font-semibold'
+            value={updateTitle}
+            onChange={(e) => setUpdateTitle(e.target.value)}
+            ref={inputTitleRef}
+            onBlur={() => setIsUpdateTitle(false)}
+          />
+        )}
       </header>
       <Scrollbars style={{ height: '60vh' }} autoHeightMax={'60vh'}>
         <Container
