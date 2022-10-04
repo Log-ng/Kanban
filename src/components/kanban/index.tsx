@@ -4,7 +4,7 @@ import { mockData } from './mockData';
 import Column from './Column';
 import { BoardType, ColumnType } from 'shared/types/kanban';
 import { Container, Draggable, DropResult } from 'react-smooth-dnd';
-import { applyDrag } from './dragDrop';
+import { applyDrag } from './utils';
 import { AiOutlinePlus } from 'react-icons/ai';
 import { GrClose } from 'react-icons/gr';
 import { motion } from 'framer-motion';
@@ -21,7 +21,6 @@ const Kanban: React.FC = () => {
       return board.columnOrder.indexOf(a.id) - board.columnOrder.indexOf(b.id);
     });
     setColumns(board.columns);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {

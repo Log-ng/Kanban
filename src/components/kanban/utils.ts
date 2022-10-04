@@ -1,4 +1,9 @@
 import { DropResult } from 'react-smooth-dnd';
+import { confirmAlert } from 'react-confirm-alert';
+import 'react-confirm-alert/src/react-confirm-alert.css';
+
+const CANCEL_BUTTON = 'Cancel';
+const YES_BUTTON = 'Yes';
 
 export const applyDrag = (arr: any[], dragResult: DropResult): any[] => {
   const { removedIndex, addedIndex, payload } = dragResult;
@@ -16,4 +21,22 @@ export const applyDrag = (arr: any[], dragResult: DropResult): any[] => {
   }
 
   return result;
+};
+
+export const submit = () => {
+  confirmAlert({
+    message: 'Are you sure ?',
+    buttons: [
+      {
+        label: YES_BUTTON,
+        onClick: () => alert('long')
+        ,
+      },
+      {
+        label: CANCEL_BUTTON,
+      },
+    ],
+    closeOnEscape: true,
+    closeOnClickOutside: true,
+  });
 };
