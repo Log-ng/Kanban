@@ -18,7 +18,7 @@ export interface AuthResponse {
     message: string;
     status: string;
     fullname?: string;
-    token: string;
+    accessToken: string;
   };
 }
 
@@ -35,5 +35,6 @@ export interface SignUpResponse {
   data: {
     message: string;
     status: string;
+    field: string;
   };
 }

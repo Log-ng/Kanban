@@ -5,15 +5,16 @@ import { GrClose } from 'react-icons/gr';
 import { CardType, ColumnType } from 'shared/types/kanban';
 import { Scrollbars } from 'react-custom-scrollbars';
 import { Container, Draggable, DropResult } from 'react-smooth-dnd';
-import { submit } from './utils';
+import { confirmDelete } from './utils';
 
 interface Props {
   column: ColumnType;
   onCardDrop: (columnId: string, dropResult: DropResult) => void;
+  updateColumn: (coloumnUpdated: ColumnType, isDeleteColumn: boolean) => void;
 }
 
 const Board: React.FC<Props> = (props) => {
-  const { onCardDrop, column } = props;
+  const { onCardDrop, column, updateColumn } = props;
 
   const [isUpdateTitle, setIsUpdateTitle] = useState<boolean>(false);
   const [updateTitle, setUpdateTitle] = useState<string>(column.title);
@@ -30,6 +31,14 @@ const Board: React.FC<Props> = (props) => {
     return column.cardOrder.indexOf(a.id) - column.cardOrder.indexOf(b.id);
   });
 
+  const onUpdateColumn = (isDeleteColumn: boolean) => {
+    if (updateTitle === '') return;
+    setIsUpdateTitle(false); 
+    const coloumnUpdated = { ...column };
+    coloumnUpdated.title = updateTitle;
+    updateColumn(coloumnUpdated, isDeleteColumn);
+  }
+
   return (
     <div className='w-[272px] bg-[#ebecf0] rounded p-2 mr-4 shadow-lg'>
       <header className='column-drag-handle font-semibold p-2 cursor-pointer underline'>
@@ -39,7 +48,7 @@ const Board: React.FC<Props> = (props) => {
               {updateTitle}
             </div>
             <GrClose
-              onClick={() => submit()}
+              onClick={() => confirmDelete(onUpdateColumn)}
               className='mt-[2px] cursor-pointer hover:scale-110 transition-all'
               size={20}
             />
@@ -51,7 +60,7 @@ const Board: React.FC<Props> = (props) => {
             value={updateTitle}
             onChange={(e) => setUpdateTitle(e.target.value)}
             ref={inputTitleRef}
-            onBlur={() => setIsUpdateTitle(false)}
+            onBlur={() => onUpdateColumn(false)}
           />
         )}
       </header>

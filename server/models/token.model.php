@@ -12,8 +12,8 @@ class Token {
 
     public function saveToken() {
         $query = "INSERT INTO $this->table (username, token) VALUES (?, ?)";
-        $this->username = htmlspecialchars(strip_tags($this->username));
-        $this->token = htmlspecialchars(strip_tags($this->token));
+        $this->username = $this->username;
+        $this->token = $this->token;
 
         $stmt = $this->conn->prepare($query);
         

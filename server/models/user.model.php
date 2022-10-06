@@ -13,9 +13,9 @@ class User {
 
     public function create() {
         $query = "INSERT INTO $this->table (username, password, fullname) VALUES (?, ?, ?)";
-        $this->username = htmlspecialchars(strip_tags($this->username));
-        $this->password = htmlspecialchars(strip_tags($this->password));
-        $this->fullname = htmlspecialchars(strip_tags($this->fullname));
+        $this->username = $this->username;
+        $this->password = $this->password;
+        $this->fullname = $this->fullname;
         $this->password = password_hash($this->password, PASSWORD_DEFAULT);
 
         $stmt = $this->conn->prepare($query);
@@ -34,7 +34,7 @@ class User {
         return $stmt;
     }
 
-    public function checkUsername() {
+    public function isUserExist() {
 
         $query = 'SELECT username FROM ' . $this->table . ' WHERE username=?';
         $stmt = $this->conn->prepare($query);
@@ -42,7 +42,7 @@ class User {
         $stmt->execute([$this->username]);
         $user = $stmt->fetch();
         
-        return ! $user;
+        return $user;
     }
 
     public function totalUser() {

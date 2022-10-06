@@ -7,6 +7,7 @@ header('Access-Control-Allow-Headers: Access-Control-Allow-Headers, Content-Type
 
 $data = json_decode(file_get_contents("php://input"));
 include_once './controllers/userController.php';
+include_once './controllers/tokenController.php';
 
 $controller = $data->controller;
 switch ($controller) {
@@ -30,6 +31,8 @@ switch ($controller) {
         $fullname = $data->fullname;
         echo $userController->signUp($username, $password, $fullname);
         break;
+
+
         
     default:
         echo "Not match any path!";

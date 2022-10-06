@@ -25,6 +25,7 @@ const Kanban: React.FC = () => {
 
   useEffect(() => {
     const isInputAdded = inputAddRef && inputAddRef.current;
+
     if (isInputAdded) {
       inputAddRef.current.focus();
     }
@@ -85,6 +86,26 @@ const Kanban: React.FC = () => {
 
   };
 
+  const updateColumn = (coloumnUpdated: ColumnType, isDeleteColumn: boolean) => {
+    let newColumns = [...columns];
+    const indexOfColumnUpdate = newColumns.findIndex(
+      (columnId) => columnId.id === coloumnUpdated.id
+    );
+
+    if (isDeleteColumn) {
+      newColumns.splice(indexOfColumnUpdate, 1);
+    } else {
+      newColumns.splice(indexOfColumnUpdate, 1, coloumnUpdated);
+    }
+
+    setColumns(newColumns);
+    setBoard({
+      ...board,
+      columnOrder: newColumns.map((column) => column.id),
+      columns: newColumns,
+    });
+  };
+  
   return (
     <div className='h-[85vh] rounded-md bg-[#BCB4D8] px-5'>
       <nav className=''>board bar</nav>
@@ -109,6 +130,7 @@ const Kanban: React.FC = () => {
                   column={column}
                   key={column.id}
                   onCardDrop={onCardDrop}
+                  updateColumn={updateColumn}
                 />
               </Draggable>
             ))}

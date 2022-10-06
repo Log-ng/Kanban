@@ -9,16 +9,21 @@ import { UserSignUp } from 'shared/types/user';
 import { errorList } from './errorList';
 import { signUp } from './services';
 import { CONTROLLER_SIGNUP } from 'shared/urlServices';
-import {
-  containsSpecialChars,
-  containsOnlyLetters,
-} from 'shared/utils';
+
+const FiELD_USERNAME = 'username';
+const FiELD_PASSWORD = 'password';
+const FiELD_EXIST = 'exist';
+const FiELD_FULLNAME = 'fullname';
 
 const SignUp: React.FC = () => {
   const isLogin = useMySelector((state) => state.auth.isLoggedIn);
   const navigate = useNavigate();
 
   const [isShowError, setIsShowError] = useState<boolean>(false);
+  const [validUsername, setValidUsername] = useState<boolean>(true);
+  const [validFullname, setValidFullname] = useState<boolean>(true);
+  const [validPassword, setValidPassword] = useState<boolean>(true);
+  const [messageError, setMessageError] = useState<string>('');
   const [isExist, setIsExist] = useState<boolean>(false);
   const [userSignUp, setUserSignUp] = useState<UserSignUp>({
     username: '',
@@ -26,23 +31,14 @@ const SignUp: React.FC = () => {
     fullname: '',
     passwordConfirm: '',
   });
-  
-  const validUsername =
-    userSignUp.username.length >= 4 &&
-    userSignUp.username.length <= 30 && !containsSpecialChars(userSignUp.username);
-  const validFullname =
-    userSignUp.fullname?.length >= 4 &&
-    userSignUp.fullname?.length <= 30 && containsOnlyLetters(userSignUp.fullname);
-  const validPassword =
-    userSignUp.password?.length >= 2 &&
-    userSignUp.password?.length <= 20 &&
-    containsSpecialChars(userSignUp.password);
-  const matchPassword = userSignUp.password.localeCompare(userSignUp.passwordConfirm) === 0 ? true: false;
+
+  const matchPassword =
+    userSignUp.password.localeCompare(userSignUp.passwordConfirm) === 0
+      ? true
+      : false;
 
   const onNext = () => {
-    const validateUser = validUsername && validFullname && validPassword && matchPassword;
-
-    if (validateUser) {
+    if (matchPassword) {
       signUp({
         controller: CONTROLLER_SIGNUP,
         username: userSignUp.username,
@@ -54,12 +50,21 @@ const SignUp: React.FC = () => {
           return;
         }
         setIsShowError(true);
-        setIsExist(true);
+        setMessageError(response.data.message);
+        if (response.data.field === FiELD_USERNAME) setValidUsername(false);
+        if (response.data.field === FiELD_FULLNAME) setValidFullname(false);
+        if (response.data.field === FiELD_PASSWORD) setValidPassword(false);
+        if (response.data.field === FiELD_EXIST) setIsExist(true);
       });
-    } else setIsShowError(true);
+    } else {
+      setIsShowError(true);
+    }
   };
 
   const getUserInfo = (type: string, value: string): void => {
+    setValidFullname(true);
+    setValidPassword(true);
+    setValidUsername(true);
     setIsShowError(false);
     setIsExist(false);
     switch (type) {
@@ -149,11 +154,7 @@ const SignUp: React.FC = () => {
                       Something wasn't right !!!
                     </span>
                     <ul className='mt-1.5 text-red-700 list-disc list-inside'>
-                      {isExist && <li>{errorList.usernameExist}</li>}
-                      {!validUsername && <li>{errorList.usernameError}</li>}
-                      {!validFullname && <li>{errorList.fullnameError}</li>}
-                      {!validPassword && <li>{errorList.passwordError}</li>}
-                      {!matchPassword && <li>{errorList.passwordUnmatched}</li>}
+                      {!matchPassword?errorList.passwordUnmatched: messageError}
                     </ul>
                   </div>
                 </motion.div>
