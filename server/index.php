@@ -5,10 +5,27 @@ header('Content-Type: application/json');
 header('Access-Control-Allow-Methods: POST');
 header('Access-Control-Allow-Headers: Access-Control-Allow-Headers, Content-Type, Access-Control-Allow-Methods, Authorization, X-Requested-With');
 
-$data = json_decode(file_get_contents("php://input"));
 include_once './controllers/userController.php';
 include_once './controllers/tokenController.php';
 
+if($_SERVER['REQUEST_METHOD'] === 'GET') {
+    $controller = $_GET['controller'];
+    switch ($controller) {
+        case 'getUser':
+
+            $currentPage = $_GET['currentPage'];
+            $recordPerPage = $_GET['recordPerPage'];
+            $userController = new UserController();
+            echo $userController->getUserByIndex($currentPage, $recordPerPage);
+            break;
+            
+        default:
+            echo "GET method: Not match any path!";
+    }
+    return;
+}
+
+$data = json_decode(file_get_contents("php://input"));
 $controller = $data->controller;
 switch ($controller) {
     case 'login':
@@ -53,9 +70,14 @@ switch ($controller) {
         echo $tokenController->isTokenValid('eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE2NjUwNjgxNDUsImp0aSI6ImRBV29KUUNHNnVUck56SUVxWUZFVGc9PSIsImlzcyI6ImxvY2FsaG9zdCIsImV4cCI6MTY2NTA3MTc0NSwiZGF0YSI6eyJ1c2VyTmFtZSI6InRlc3QiLCIkcGFzc3dvcmQiOiIxMkAifX0.9O_Ow4gZrasYaJqBJxUtxlR9ug85Moy-VBgw2EOGLfA');
 
         break;
+
+    case 'nothing':
+        $userController = new UserController();
+        echo $userController->getUserByIndex(2, 5);
+        break;
         
     default:
-        echo "Not match any path!";
+        echo "POST method: Not match any path!";
 }
 
 

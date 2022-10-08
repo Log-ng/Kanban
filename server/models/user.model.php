@@ -65,4 +65,29 @@ class User {
         if(password_verify($this->password, $user['password'])) return $user['fullname'];
         return false;
     }
+
+    public function getUser($currentPage, $recordPerPage) {
+        $totalUser = $this->totalUser();
+        $totalPage = ceil($totalUser/ $recordPerPage);
+        $offset = ($currentPage - 1)* $recordPerPage;
+        $limit = "LIMIT $offset, " . strval($recordPerPage);
+        $query = "SELECT * FROM " . $this->table . " " . $limit; 
+        $stmt = $this->conn->prepare($query);
+        $stmt->execute();
+        $num = $stmt->rowCount();
+
+        if($num <= 0) return [];
+        
+        $users = array();
+        while($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+          extract($row);
+          $user = array(
+            'username' => $username, 
+            'fullname' => $fullname,
+          );
+
+          array_push($users, $user);
+        };
+        return $users;
+    }
 }

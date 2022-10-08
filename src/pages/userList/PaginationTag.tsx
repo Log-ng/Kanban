@@ -1,16 +1,26 @@
-import React from 'react'
+import React from 'react';
 
-const PaginationTag = () => {
+interface Props {
+  numPage: number;
+  setCurrentPage: React.Dispatch<React.SetStateAction<number>>;
+  currentPage: number;
+}
+
+const PaginationTag: React.FC<Props>= (props) => {
+  const { numPage, setCurrentPage, currentPage } = props;
   return (
-    <li>
+    <li onClick={() => setCurrentPage(numPage)}>
       <div
         aria-current='page'
-        className='z-10 py-2 px-3 leading-tight text-blue-600 bg-blue-50 border border-blue-300 hover:bg-blue-100 hover:text-blue-700 dark:border-gray-700 dark:bg-gray-700 dark:text-white'
+        className={
+          'paging-tag ' +
+          (numPage === currentPage ? 'bg-[#68589b] text-white' : '')
+        }
       >
-        3
+        {numPage}
       </div>
     </li>
   );
-}
+};
 
-export default PaginationTag
+export default PaginationTag;

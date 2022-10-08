@@ -23,5 +23,8 @@
   .button-add-new-clomn-form {
     @apply bg-[#68589b] hover:bg-[#48367F] text-white font-medium py-[6px] px-3 border border-[#68589b] rounded mt-2 transition-all hover:scale-105
   }
+  .paging-tag {
+    @apply cursor-pointer z-10 py-2 px-3 leading-tight bg-[#bcb4d8] border border-[#68589b] hover:bg-[#48367F]  transition-all
+  }
 
 }

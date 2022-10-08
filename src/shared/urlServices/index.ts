@@ -9,3 +9,4 @@ export { appRouters, myAxios };
 export const CONTROLLER_LOGIN = 'login';
 export const CONTROLLER_LOGOUT = 'logout';
 export const CONTROLLER_SIGNUP = 'signUp';
+export const CONTROLLER_GETUSER = 'getUser';

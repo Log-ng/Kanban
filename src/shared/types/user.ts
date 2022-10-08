@@ -9,3 +9,12 @@ export interface UserSignUp extends User {
   fullname: string;
   password: string;
 }
+
+export interface GetUserResponse {
+  data: {
+    status: string;
+    users: User[];
+    totalUser: number
+  };
+}
+
