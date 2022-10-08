@@ -29,10 +29,21 @@ class TokenController extends BaseController {
 
     public function responeTokenInvalid() {
         return json_encode(array (
-            'status' => 'Fail',
+            'status' => 403,
             'token' => 'Token invalid or expired',
         ));
-    }
-
+    }  
     
+    public function genNewAccessToken($refreshToken) {
+        $secretKey  = $_ENV['SECRET_KEY'];
+
+        $decoded = JWT::decode($refreshToken, new Key($secretKey, 'HS256'));
+        $payload = json_decode(json_encode($decoded), true);
+
+        $jwt = $this->database->genToken($payload['data']['username'], $payload['data']['password'], isRefreshToken: false);
+        return json_encode(array (
+            'status' => 200,
+            'token' => $jwt,
+        ));
+    }
 }

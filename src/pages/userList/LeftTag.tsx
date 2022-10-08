@@ -1,18 +1,17 @@
 import React from 'react';
 
 interface Props {
-  onClick: () => void
+  onClick: () => void;
 }
 
-const LeftTag:React.FC<Props> = (props) => {
-  const {onClick} = props;
+const LeftTag: React.FC<Props> = (props) => {
+  const { onClick } = props;
   return (
     <li>
       <div
         onClick={onClick}
-        className='cursor-pointer block py-2 px-3 ml-0 leading-tight text-gray-500 bg-white rounded-l-lg border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white'
+        className='cursor-pointer block py-2 px-3 ml-0 leading-tight text-gray-500 bg-white rounded-l-lg border border-[#68589b] hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white'
       >
-        <span className='sr-only'>Previous</span>
         <svg
           aria-hidden='true'
           className='w-5 h-5'

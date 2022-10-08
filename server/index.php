@@ -9,13 +9,27 @@ include_once './controllers/userController.php';
 include_once './controllers/tokenController.php';
 
 if($_SERVER['REQUEST_METHOD'] === 'GET') {
+    $headers = apache_request_headers();
+    $tokenController = new TokenController();
+    
+    if(! isset($headers['Authorization'])) {
+        header("HTTP/1.1 403");
+        echo $tokenController->responeTokenInvalid();
+        return;
+    }
+    if(! $tokenController->isTokenValid($headers['Authorization'])) {
+        header("HTTP/1.1 403");
+        echo $tokenController->responeTokenInvalid();
+        return;
+    }
+    
     $controller = $_GET['controller'];
     switch ($controller) {
         case 'getUser':
-
             $currentPage = $_GET['currentPage'];
             $recordPerPage = $_GET['recordPerPage'];
             $userController = new UserController();
+            header("HTTP/1.1 200 OK");
             echo $userController->getUserByIndex($currentPage, $recordPerPage);
             break;
             
@@ -40,12 +54,14 @@ switch ($controller) {
         $tokenController = new TokenController();
         
         if(! isset($headers['Authorization'])) {
+            header("HTTP/1.1 403");
             echo $tokenController->responeTokenInvalid();
-            break;
+            return;
         }
         if(! $tokenController->isTokenValid($headers['Authorization'])) {
+            header("HTTP/1.1 403");
             echo $tokenController->responeTokenInvalid();
-            break;
+            return;
         }
     
         $userController = new UserController();
@@ -65,17 +81,21 @@ switch ($controller) {
         echo $userController->signUp($username, $password, $fullname);
         break;
 
-    case 'token':
+    case 'accessToken':
+        $headers = apache_request_headers();
         $tokenController = new TokenController();
-        echo $tokenController->isTokenValid('eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE2NjUwNjgxNDUsImp0aSI6ImRBV29KUUNHNnVUck56SUVxWUZFVGc9PSIsImlzcyI6ImxvY2FsaG9zdCIsImV4cCI6MTY2NTA3MTc0NSwiZGF0YSI6eyJ1c2VyTmFtZSI6InRlc3QiLCIkcGFzc3dvcmQiOiIxMkAifX0.9O_Ow4gZrasYaJqBJxUtxlR9ug85Moy-VBgw2EOGLfA');
-
-        break;
-
-    case 'nothing':
-        $userController = new UserController();
-        echo $userController->getUserByIndex(2, 5);
-        break;
         
+        if(! isset($headers['Authorization'])) {
+            echo $tokenController->responeTokenInvalid();
+            break;
+        }
+        if(! $tokenController->isTokenValid($headers['Authorization'])) {
+            echo $tokenController->responeTokenInvalid();
+            break;
+        }
+    
+        echo $tokenController->genNewAccessToken($headers['Authorization']);
+        break;
     default:
         echo "POST method: Not match any path!";
 }

@@ -99,6 +99,7 @@ class UserController extends BaseController {
     public function getUserByIndex($currentPage, $recordPerPage) {
         $users =$this->userModel->getUser($currentPage, $recordPerPage);
         $totalUser = $this->userModel->totalUser();
+        
         if(count($users) === 0) return json_encode(array(
             'status' => 'Empty',
             'totalUser'=> $totalUser 

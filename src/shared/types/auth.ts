@@ -45,4 +45,9 @@ export interface SignUpResponse {
   };
 }
 
-
+export interface TokenResponse {
+  data: {
+    status: number;
+    token: string;
+  }
+}
