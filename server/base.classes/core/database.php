@@ -10,7 +10,7 @@ define('DB_HOST', $_ENV['DB_HOST']);
 define('DB_NAME', $_ENV['DB_NAME']);
 define('DB_USERNAME', $_ENV['DB_USERNAME']);
 define('DB_PASS', $_ENV['DB_PASS']);
-define('EXPIRED_ACCESS_TOKEN', 60);
+define('EXPIRED_ACCESS_TOKEN', 180);
 define('EXPIRED_REFRESH_TOKEN', 3600);
 
 class Database {
@@ -36,7 +36,7 @@ class Database {
         $secretKey  = $_ENV['SECRET_KEY'];
         $now = strtotime("now");
         $tokenId    = base64_encode(random_bytes(16));
-        $expire     = $now + ($isRefreshToken)? EXPIRED_REFRESH_TOKEN: EXPIRED_ACCESS_TOKEN;    
+        $expire     = $now + (($isRefreshToken)? EXPIRED_REFRESH_TOKEN: EXPIRED_ACCESS_TOKEN);    
         $serverName = DB_HOST;
         $data = [
             'iat'  => $now,    

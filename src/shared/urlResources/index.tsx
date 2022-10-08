@@ -4,5 +4,6 @@ export const appRouters = {
   LINK_TO_MAIN_PAGE: 'main',
   LINK_TO_SIGN_UP_PAGE: 'signup',
   LINK_TO_PROFILE_PAGE: 'profile',
+  LINK_TO_USER_LIST: 'users',
 };
 

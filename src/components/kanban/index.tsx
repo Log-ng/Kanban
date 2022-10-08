@@ -109,7 +109,10 @@ const Kanban: React.FC = () => {
   return (
     <div className='h-[85vh] rounded-md bg-[#BCB4D8] px-5'>
       <nav className=''>board bar</nav>
-      <Scrollbars style={{ height: '80vh' }}>
+      <Scrollbars
+        style={{ height: '80vh', }}
+        hideTracksWhenNotNeeded={true}
+      >
         <div className='flex rounded '>
           <Container
             orientation='horizontal'

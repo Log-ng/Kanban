@@ -19,12 +19,18 @@ export interface AuthResponse {
     status: string;
     fullname?: string;
     accessToken: string;
+    refreshToken: string;
   };
 }
 
 export interface LogoutRequest {
   username: string;
   controller: string;
+}
+
+export interface LogoutResponse {
+  status: string;
+  message: string;
 }
 export interface SignUpRequest {
   username: string;
@@ -38,3 +44,5 @@ export interface SignUpResponse {
     field: string;
   };
 }
+
+

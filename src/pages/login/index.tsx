@@ -38,6 +38,7 @@ const Login: React.FC = () => {
         );
         
         localStorage.setItem('token', response.data.accessToken);
+        localStorage.setItem('refreshToken', response.data.refreshToken);
         localStorage.setItem('username', userLogin.username);
         localStorage.setItem('fullname', response.data.fullname ?? '');
 

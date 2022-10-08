@@ -17,7 +17,7 @@ const Header: React.FC = () => {
   const username = useMySelector((state) => state.auth.currentUser.username);
 
   const handleLogout = () => {
-    logout({ username, controller: CONTROLLER_LOGOUT });
+    logout({ username, controller: CONTROLLER_LOGOUT })
     localStorage.clear();
     dispatch(logoutLocal());
     navigation(appRouters.LINK_TO_HOME_PAGE);
@@ -97,6 +97,14 @@ const Header: React.FC = () => {
             >
               <div className='text-gray-700 block px-4 py-2 text-sm hover:bg-slate-100'>
                 My profile
+              </div>
+            </div>
+            <div
+              className='py-1'
+              onClick={() => navigation(`/${appRouters.LINK_TO_USER_LIST}`)}
+            >
+              <div className='text-gray-700 block px-4 py-2 text-sm hover:bg-slate-100'>
+                All users
               </div>
             </div>
             <div className='py-1' onClick={handleLogout}>

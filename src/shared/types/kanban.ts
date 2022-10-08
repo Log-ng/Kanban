@@ -4,6 +4,7 @@ export interface CardType {
   columnId: string;
   title: string;
   description: string;
+  priority?: string;
 }
 
 export interface ColumnType {

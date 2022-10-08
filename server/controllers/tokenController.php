@@ -13,22 +13,25 @@ class TokenController extends BaseController {
         parent::__construct();
     }
 
-    public function isAccessTokenValid($token) {
+    public function isTokenValid($token) {
         
         $secretKey  = $_ENV['SECRET_KEY'];
         try {
             $decoded = JWT::decode($token, new Key($secretKey, 'HS256'));
             $payload = json_decode(json_encode($decoded), true);
     
-            return json_encode(array (
-                'paload' => $payload['data'],
-            ));  
+            return true;
         }
         catch(Exception $e) {
-            return json_encode(array (
-                'token' => 'Token invalid or expired',
-            )); 
+            return false;
         }
+    }
+
+    public function responeTokenInvalid() {
+        return json_encode(array (
+            'status' => 'Fail',
+            'token' => 'Token invalid or expired',
+        ));
     }
 
     
