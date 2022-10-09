@@ -32,7 +32,7 @@ class Database {
 
         return $this->conn;
     }
-    public function genToken($username, $password, $isRefreshToken) {
+    public function genToken($userId, $isRefreshToken) {
         $secretKey  = $_ENV['SECRET_KEY'];
         $now = strtotime("now");
         $tokenId    = base64_encode(random_bytes(16));
@@ -44,8 +44,7 @@ class Database {
             'iss'  => $serverName,                 
             'exp'  => $expire,                      
             'data' => [                     
-                'username' => $username, 
-                'password' => $password  
+                'userId' => $userId, 
             ]
         ];     
         return JWT::encode(

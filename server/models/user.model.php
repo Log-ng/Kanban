@@ -90,4 +90,14 @@ class User {
         };
         return $users;
     }
+
+    public function getIdFromUsername() {
+        $query = 'SELECT userId FROM ' . $this->table . ' WHERE username=?';
+        $stmt = $this->conn->prepare($query);
+
+        $stmt->execute([$this->username]);
+        $user = $stmt->fetch(PDO::FETCH_ASSOC);
+        if(!$user) return 0;
+        return $user['userId'];
+    }
 }

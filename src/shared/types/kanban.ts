@@ -17,6 +17,7 @@ export interface ColumnType {
 
 export interface BoardType {
   id: string;
+  boardName: string;
   columnOrder: String[];
   columns: ColumnType[];
 }

@@ -1,5 +1,6 @@
 export const mockData = {
   id: 'board-1',
+  boardName: 'test board',
   columnOrder: ['column-2', 'column-1'],
   columns: [
     {

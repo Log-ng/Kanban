@@ -40,11 +40,11 @@ const Kanban: React.FC = () => {
     newBoard.columns = newColumns;
 
     setColumns(newColumns);
-       setBoard({
-         ...board,
-         columnOrder: newColumns.map((column) => column.id),
-         columns: newColumns,
-       });
+    setBoard({
+      ...board,
+      columnOrder: newColumns.map((column) => column.id),
+      columns: newColumns,
+    });
   };
 
   const onCardDrop = (columnId: string, dropResult: DropResult) => {
@@ -71,8 +71,8 @@ const Kanban: React.FC = () => {
       boardId: board.id,
       title: newColumnTitle,
       cards: [],
-      cardOrder: []
-    } 
+      cardOrder: [],
+    };
     let columnsAfterAdd = [...columns];
     columnsAfterAdd.push(newAddedColumn);
 
@@ -80,13 +80,15 @@ const Kanban: React.FC = () => {
     setBoard({
       ...board,
       columnOrder: columnsAfterAdd.map((column) => column.id),
-      columns: columnsAfterAdd
+      columns: columnsAfterAdd,
     });
     setNewColumnTitle('');
-
   };
 
-  const updateColumn = (coloumnUpdated: ColumnType, isDeleteColumn: boolean) => {
+  const updateColumn = (
+    coloumnUpdated: ColumnType,
+    isDeleteColumn: boolean
+  ) => {
     let newColumns = [...columns];
     const indexOfColumnUpdate = newColumns.findIndex(
       (columnId) => columnId.id === coloumnUpdated.id
@@ -105,7 +107,7 @@ const Kanban: React.FC = () => {
       columns: newColumns,
     });
   };
-  
+
   return (
     <div className='h-[85vh] rounded-md bg-[#BCB4D8] px-5'>
       <nav className=''>board bar</nav>

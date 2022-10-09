@@ -40,7 +40,7 @@ class TokenController extends BaseController {
         $decoded = JWT::decode($refreshToken, new Key($secretKey, 'HS256'));
         $payload = json_decode(json_encode($decoded), true);
 
-        $jwt = $this->database->genToken($payload['data']['username'], $payload['data']['password'], isRefreshToken: false);
+        $jwt = $this->database->genToken($payload['data']['userId'], isRefreshToken: false);
         return json_encode(array (
             'status' => 200,
             'token' => $jwt,

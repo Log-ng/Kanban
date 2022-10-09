@@ -14,8 +14,9 @@ class UserController extends BaseController {
 
         $isUserValid = $this->userModel->authLogin();
         if($isUserValid) {  
-            $jwt = $this->database->genToken($this->userModel->username, $this->userModel->password, isRefreshToken: false);
-            $refreshToken = $this->database->genToken($this->userModel->username, $this->userModel->password, isRefreshToken: true);
+            $userId = $this->userModel->getIdFromUsername();
+            $jwt = $this->database->genToken($userId, isRefreshToken: false);
+            $refreshToken = $this->database->genToken($userId, isRefreshToken: true);
 
             $this->tokenModel->deleteAllOldToken($this->userModel->username);
 
@@ -28,7 +29,7 @@ class UserController extends BaseController {
                 'status' => 'Success',
                 'fullname' => $isUserValid,
                 'accessToken' => $jwt,
-                'refreshToken' => $refreshToken
+                'refreshToken' => $refreshToken,
             ));   
         }
         return json_encode(array(
@@ -111,4 +112,5 @@ class UserController extends BaseController {
             'totalUser'=> $totalUser 
         ));
     }
+
 }
