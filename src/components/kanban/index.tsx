@@ -25,6 +25,7 @@ const Kanban: React.FC = () => {
 
   useEffect(() => {
     const isInputAdded = inputAddRef && inputAddRef.current;
+
     if (isInputAdded) {
       inputAddRef.current.focus();
     }
@@ -39,11 +40,11 @@ const Kanban: React.FC = () => {
     newBoard.columns = newColumns;
 
     setColumns(newColumns);
-       setBoard({
-         ...board,
-         columnOrder: newColumns.map((column) => column.id),
-         columns: newColumns,
-       });
+    setBoard({
+      ...board,
+      columnOrder: newColumns.map((column) => column.id),
+      columns: newColumns,
+    });
   };
 
   const onCardDrop = (columnId: string, dropResult: DropResult) => {
@@ -70,8 +71,8 @@ const Kanban: React.FC = () => {
       boardId: board.id,
       title: newColumnTitle,
       cards: [],
-      cardOrder: []
-    } 
+      cardOrder: [],
+    };
     let columnsAfterAdd = [...columns];
     columnsAfterAdd.push(newAddedColumn);
 
@@ -79,16 +80,41 @@ const Kanban: React.FC = () => {
     setBoard({
       ...board,
       columnOrder: columnsAfterAdd.map((column) => column.id),
-      columns: columnsAfterAdd
+      columns: columnsAfterAdd,
     });
     setNewColumnTitle('');
+  };
 
+  const updateColumn = (
+    coloumnUpdated: ColumnType,
+    isDeleteColumn: boolean
+  ) => {
+    let newColumns = [...columns];
+    const indexOfColumnUpdate = newColumns.findIndex(
+      (columnId) => columnId.id === coloumnUpdated.id
+    );
+
+    if (isDeleteColumn) {
+      newColumns.splice(indexOfColumnUpdate, 1);
+    } else {
+      newColumns.splice(indexOfColumnUpdate, 1, coloumnUpdated);
+    }
+
+    setColumns(newColumns);
+    setBoard({
+      ...board,
+      columnOrder: newColumns.map((column) => column.id),
+      columns: newColumns,
+    });
   };
 
   return (
     <div className='h-[85vh] rounded-md bg-[#BCB4D8] px-5'>
       <nav className=''>board bar</nav>
-      <Scrollbars style={{ height: '80vh' }}>
+      <Scrollbars
+        style={{ height: '80vh', }}
+        hideTracksWhenNotNeeded={true}
+      >
         <div className='flex rounded '>
           <Container
             orientation='horizontal'
@@ -109,6 +135,7 @@ const Kanban: React.FC = () => {
                   column={column}
                   key={column.id}
                   onCardDrop={onCardDrop}
+                  updateColumn={updateColumn}
                 />
               </Draggable>
             ))}

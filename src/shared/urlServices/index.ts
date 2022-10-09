@@ -1,10 +1,65 @@
-import myAxios from 'axios';
+import { TokenResponse } from './../types/auth';
+import axios, { AxiosError, AxiosRequestConfig } from 'axios';
 import { appRouters } from 'shared/urlResources';
 
+
 export const URL_API = 'http://localhost/Kanban/server/index.php';
+// export const URL_API = window.location.origin + '/Kanban/server/index.php';
+
+interface MyAxiosRequestConfig extends AxiosRequestConfig {
+  _retry?: boolean;
+}
+
+const myAxios = axios.create();
+
+myAxios.interceptors.request.use(
+  async (config) => {
+    config.headers = {
+      Authorization: getToken() ?? '',
+    };
+    return config;
+  },
+  (error) => {
+    Promise.reject(error);
+  }
+);
+
+myAxios.interceptors.response.use(
+  (response) => {
+    return response;
+  },
+  async (error: AxiosError) => {
+    const originalRequest: MyAxiosRequestConfig = error.config;
+    if (error.response?.status === 403 && !originalRequest._retry) {
+      originalRequest._retry = true;
+      const response: TokenResponse = await axios.post(
+        URL_API,
+        {
+          controller: CONTROLLER_ACCESS_TOKEN,
+        },
+        {
+          headers: {
+            Authorization: localStorage.getItem('refreshToken') ?? '',
+          },
+        }
+      );
+      if (response.data.status === 200) {
+        localStorage.setItem('token', response.data.token);
+        return myAxios(originalRequest);
+      }
+    }
+    return Promise.reject(error);
+  }
+);
 
 export { appRouters, myAxios };
 
 export const CONTROLLER_LOGIN = 'login';
 export const CONTROLLER_LOGOUT = 'logout';
 export const CONTROLLER_SIGNUP = 'signUp';
+export const CONTROLLER_GETUSER = 'getUser';
+export const CONTROLLER_ACCESS_TOKEN = 'accessToken';
+
+const getToken = () => {
+  return localStorage.getItem('token')
+}

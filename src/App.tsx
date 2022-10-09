@@ -8,6 +8,7 @@ import { AnimatePresence } from 'framer-motion';
 import { appRouters } from 'shared/urlResources';
 import Main from 'pages/main';
 import Profile from 'pages/profile';
+import UserList from 'pages/userList';
 
 const App = () => {
   return (
@@ -17,7 +18,8 @@ const App = () => {
         <Route path={appRouters.LINK_TO_MAIN_PAGE} element={<Main />} />
         <Route path={`/${appRouters.LINK_TO_LOGIN_PAGE}`} element={<Login />} />
         <Route path={appRouters.LINK_TO_PROFILE_PAGE} element={<Profile />} />
-        <Route path={`/${appRouters.LINK_TO_SIGN_UP_PAGE}`} element={<SignUp />} />
+        <Route path={`/${appRouters.LINK_TO_SIGN_UP_PAGE}`} element={<SignUp />}/>
+        <Route path={`/${appRouters.LINK_TO_USER_LIST}`} element={<UserList />}/>
         <Route path='*' element={<NotFoundPage />} />
       </Routes>
     </AnimatePresence>

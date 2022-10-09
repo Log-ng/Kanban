@@ -24,11 +24,13 @@ export const authSlice = createSlice({
     },
 
     logoutLocal(state) {
+      localStorage.clear();
       state.isLoggedIn = false;
       state.currentUser = {
         username: '',
         fullname: '',
       };
+
     },
   },
 });

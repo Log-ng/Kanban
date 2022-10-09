@@ -5,9 +5,51 @@ header('Content-Type: application/json');
 header('Access-Control-Allow-Methods: POST');
 header('Access-Control-Allow-Headers: Access-Control-Allow-Headers, Content-Type, Access-Control-Allow-Methods, Authorization, X-Requested-With');
 
-$data = json_decode(file_get_contents("php://input"));
 include_once './controllers/userController.php';
+include_once './controllers/tokenController.php';
+include_once './controllers/kanbanController.php';
 
+if($_SERVER['REQUEST_METHOD'] === 'GET') {
+    // $headers = apache_request_headers();
+    // $tokenController = new TokenController();
+    
+    // if(! isset($headers['Authorization'])) {
+    //     header("HTTP/1.1 403");
+    //     echo $tokenController->responeTokenInvalid();
+    //     return;
+    // }
+    // if(! $tokenController->isTokenValid($headers['Authorization'])) {
+    //     header("HTTP/1.1 403");
+    //     echo $tokenController->responeTokenInvalid();
+    //     return;
+    // }
+    
+    $controller = $_GET['controller'];
+    switch ($controller) {
+        case 'getUser':
+            $currentPage = $_GET['currentPage'];
+            $recordPerPage = $_GET['recordPerPage'];
+            $userController = new UserController();
+            header("HTTP/1.1 200 OK");
+            echo $userController->getUserByIndex($currentPage, $recordPerPage);
+            break;
+        case 'cards':
+            $columnId = $_GET['columnId'];
+            $kanbanController = new KanbanController();
+            echo $kanbanController->getCardFromColumnId($columnId);
+            break;
+        case 'columns':
+            $boardId = $_GET['boardId'];
+            $kanbanController = new KanbanController();
+            echo $kanbanController->getColumnFromBoardId($boardId);
+            break;
+        default:
+            echo "GET method: Not match any path!";
+    }
+    return;
+}
+
+$data = json_decode(file_get_contents("php://input"));
 $controller = $data->controller;
 switch ($controller) {
     case 'login':
@@ -18,9 +60,27 @@ switch ($controller) {
         break;
 
     case 'logout':
+        $headers = apache_request_headers();
+        $tokenController = new TokenController();
+        
+        if(! isset($headers['Authorization'])) {
+            header("HTTP/1.1 403");
+            echo $tokenController->responeTokenInvalid();
+            return;
+        }
+        if(! $tokenController->isTokenValid($headers['Authorization'])) {
+            header("HTTP/1.1 403");
+            echo $tokenController->responeTokenInvalid();
+            return;
+        }
+    
         $userController = new UserController();
         $username = $data->username;
         $userController->logout($username);
+        echo json_encode(array (
+            'status' => 'ok',
+            'token' => 'ok',
+        ));
         break;
 
     case 'signUp':
@@ -30,9 +90,25 @@ switch ($controller) {
         $fullname = $data->fullname;
         echo $userController->signUp($username, $password, $fullname);
         break;
+
+    case 'accessToken':
+        $headers = apache_request_headers();
+        $tokenController = new TokenController();
         
+        if(! isset($headers['Authorization'])) {
+            echo $tokenController->responeTokenInvalid();
+            break;
+        }
+        if(! $tokenController->isTokenValid($headers['Authorization'])) {
+            echo $tokenController->responeTokenInvalid();
+            break;
+        }
+    
+        echo $tokenController->genNewAccessToken($headers['Authorization']);
+        break;
+
     default:
-        echo "Not match any path!";
+        echo "POST method: Not match any path!";
 }
 
 

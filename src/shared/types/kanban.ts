@@ -4,6 +4,7 @@ export interface CardType {
   columnId: string;
   title: string;
   description: string;
+  priority?: string;
 }
 
 export interface ColumnType {
@@ -16,6 +17,7 @@ export interface ColumnType {
 
 export interface BoardType {
   id: string;
+  boardName: string;
   columnOrder: String[];
   columns: ColumnType[];
 }

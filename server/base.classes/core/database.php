@@ -10,6 +10,8 @@ define('DB_HOST', $_ENV['DB_HOST']);
 define('DB_NAME', $_ENV['DB_NAME']);
 define('DB_USERNAME', $_ENV['DB_USERNAME']);
 define('DB_PASS', $_ENV['DB_PASS']);
+define('EXPIRED_ACCESS_TOKEN', 10);
+define('EXPIRED_REFRESH_TOKEN', 60);
 
 class Database {
     
@@ -30,20 +32,19 @@ class Database {
 
         return $this->conn;
     }
-    public function genToken($username) {
+    public function genToken($userId, $isRefreshToken) {
         $secretKey  = $_ENV['SECRET_KEY'];
+        $now = strtotime("now");
         $tokenId    = base64_encode(random_bytes(16));
-        $issuedAt   = new DateTimeImmutable();
-        $expire     = $issuedAt->modify('+6 minutes')->getTimestamp();
+        $expire     = $now + (($isRefreshToken)? EXPIRED_REFRESH_TOKEN: EXPIRED_ACCESS_TOKEN);    
         $serverName = DB_HOST;
         $data = [
-            'iat'  => $issuedAt->getTimestamp(),    
+            'iat'  => $now,    
             'jti'  => $tokenId,                     
             'iss'  => $serverName,                 
-            'nbf'  => $issuedAt->getTimestamp(),   
             'exp'  => $expire,                      
             'data' => [                     
-                'userName' => $username,   
+                'userId' => $userId, 
             ]
         ];     
         return JWT::encode(
@@ -52,4 +53,6 @@ class Database {
             'HS256'   
         );   
     }
+
+
 }

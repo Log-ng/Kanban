@@ -13,9 +13,9 @@ class User {
 
     public function create() {
         $query = "INSERT INTO $this->table (username, password, fullname) VALUES (?, ?, ?)";
-        $this->username = htmlspecialchars(strip_tags($this->username));
-        $this->password = htmlspecialchars(strip_tags($this->password));
-        $this->fullname = htmlspecialchars(strip_tags($this->fullname));
+        $this->username = $this->username;
+        $this->password = $this->password;
+        $this->fullname = $this->fullname;
         $this->password = password_hash($this->password, PASSWORD_DEFAULT);
 
         $stmt = $this->conn->prepare($query);
@@ -34,7 +34,7 @@ class User {
         return $stmt;
     }
 
-    public function checkUsername() {
+    public function isUserExist() {
 
         $query = 'SELECT username FROM ' . $this->table . ' WHERE username=?';
         $stmt = $this->conn->prepare($query);
@@ -42,7 +42,7 @@ class User {
         $stmt->execute([$this->username]);
         $user = $stmt->fetch();
         
-        return ! $user;
+        return $user;
     }
 
     public function totalUser() {
@@ -64,5 +64,40 @@ class User {
         if(!$user) return false;
         if(password_verify($this->password, $user['password'])) return $user['fullname'];
         return false;
+    }
+
+    public function getUser($currentPage, $recordPerPage) {
+        $totalUser = $this->totalUser();
+        $totalPage = ceil($totalUser/ $recordPerPage);
+        $offset = ($currentPage - 1)* $recordPerPage;
+        $limit = "LIMIT $offset, " . strval($recordPerPage);
+        $query = "SELECT * FROM " . $this->table . " " . $limit; 
+        $stmt = $this->conn->prepare($query);
+        $stmt->execute();
+        $num = $stmt->rowCount();
+
+        if($num <= 0) return [];
+        
+        $users = array();
+        while($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+          extract($row);
+          $user = array(
+            'username' => $username, 
+            'fullname' => $fullname,
+          );
+
+          array_push($users, $user);
+        };
+        return $users;
+    }
+
+    public function getIdFromUsername() {
+        $query = 'SELECT userId FROM ' . $this->table . ' WHERE username=?';
+        $stmt = $this->conn->prepare($query);
+
+        $stmt->execute([$this->username]);
+        $user = $stmt->fetch(PDO::FETCH_ASSOC);
+        if(!$user) return 0;
+        return $user['userId'];
     }
 }
