@@ -25,7 +25,8 @@ export const applyDrag = (arr: any[], dragResult: DropResult): any[] => {
 
 export const confirmDelete = (dispatch: Function) => {
   confirmAlert({
-    message: 'Are you sure ?',
+    title: 'Are you sure ?',
+    message: 'All card in this column will be deleted',
     buttons: [
       {
         label: YES_BUTTON,

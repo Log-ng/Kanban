@@ -9,6 +9,7 @@ import { appRouters } from 'shared/urlResources';
 import Main from 'pages/main';
 import Profile from 'pages/profile';
 import UserList from 'pages/userList';
+import Board from 'pages/board';
 
 const App = () => {
   return (
@@ -16,6 +17,7 @@ const App = () => {
       <Routes>
         <Route path={appRouters.LINK_TO_HOME_PAGE} element={<Home />} />
         <Route path={appRouters.LINK_TO_MAIN_PAGE} element={<Main />} />
+        <Route path={`/${appRouters.LINK_TO_MAIN_PAGE}/:slug`} element={<Board />} />
         <Route path={`/${appRouters.LINK_TO_LOGIN_PAGE}`} element={<Login />} />
         <Route path={appRouters.LINK_TO_PROFILE_PAGE} element={<Profile />} />
         <Route path={`/${appRouters.LINK_TO_SIGN_UP_PAGE}`} element={<SignUp />}/>

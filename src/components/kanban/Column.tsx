@@ -135,9 +135,6 @@ const Board: React.FC<Props> = (props) => {
                 />
               </div>
             </div>
-            {/* <div className='pt-1.5 '>
-          <BsThreeDots className='cursor-pointer' size={25} color='gray' />
-        </div> */}
           </div>
         </div>
       )}

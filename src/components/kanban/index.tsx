@@ -1,26 +1,82 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Scrollbars } from 'react-custom-scrollbars';
-import { mockData } from './mockData';
 import Column from './Column';
-import { BoardType, ColumnType } from 'shared/types/kanban';
+import { BoardType, ColumnRequest, ColumnType } from 'shared/types/kanban';
 import { Container, Draggable, DropResult } from 'react-smooth-dnd';
 import { applyDrag } from './utils';
 import { AiOutlinePlus } from 'react-icons/ai';
 import { GrClose } from 'react-icons/gr';
 import { motion } from 'framer-motion';
+import { useMyDispatch, useMySelector } from 'redux/hooks';
+import { useNavigate, useParams } from 'react-router-dom';
+import { setBoardId } from 'redux/boardSlice';
+import { appRouters } from 'shared/urlResources';
+import {
+  addNewColumnService,
+  deleteColumnService,
+  getCards,
+  getColumns,
+} from './services';
+import { logoutLocal } from 'redux/authSlice';
+import {
+  CONTROLLER_ADD_NEW_COLUMN,
+  CONTROLLER_DELETE_COLUMN,
+} from 'shared/urlServices';
 
 const Kanban: React.FC = () => {
-  const [board, setBoard] = useState<BoardType>(mockData);
+  const { slug } = useParams();
+  const [board, setBoard] = useState<BoardType>({
+    id: slug ?? '',
+    columnOrder: [],
+    columns: [],
+  });
   const [columns, setColumns] = useState<ColumnType[]>([]);
   const [isAddNewColumn, setIsAddNewColumn] = useState<boolean>(false);
   const [newColumnTitle, setNewColumnTitle] = useState<string>('');
   const inputAddRef = useRef<HTMLInputElement>(null);
 
+  const isLogin = useMySelector((state) => state.auth.isLoggedIn);
+  const dispatch = useMyDispatch();
+  const onExpired = () => {
+    dispatch(logoutLocal());
+    navigation(`../${appRouters.LINK_TO_LOGIN_PAGE}`);
+  };
+
+  dispatch(setBoardId(slug ?? ''));
+  const navigation = useNavigate();
+
   useEffect(() => {
-    mockData.columns.sort((a: ColumnType, b: ColumnType) => {
-      return board.columnOrder.indexOf(a.id) - board.columnOrder.indexOf(b.id);
-    });
-    setColumns(board.columns);
+    if (!isLogin) navigation(`..${appRouters.LINK_TO_HOME_PAGE}`);
+
+    getColumns(slug ?? '')
+      .then(async (res) => {
+        if (res.data.status !== 'Success') return;
+        let newColumns = res.data.columns ?? [];
+        newColumns.forEach((column, index) => {
+          getCards(column.id)
+            .then((res) => {
+              newColumns[index].cards = res.data.cards ?? [];
+            })
+            .catch(() => {
+              onExpired();
+            });
+        });
+        console.log('notin', newColumns);
+        setColumns(newColumns);
+        setBoard({
+          ...board,
+          columns: columns,
+        });
+      })
+      .catch(() => {
+        dispatch(logoutLocal());
+        navigation(`../${appRouters.LINK_TO_LOGIN_PAGE}`);
+      });
+
+    // mockData.columns.sort((a: ColumnType, b: ColumnType) => {
+    //   return board.columnOrder.indexOf(a.id) - board.columnOrder.indexOf(b.id);
+    // });
+    // setColumns(columns.map(column => ))
   }, []);
 
   useEffect(() => {
@@ -76,6 +132,15 @@ const Kanban: React.FC = () => {
     let columnsAfterAdd = [...columns];
     columnsAfterAdd.push(newAddedColumn);
 
+    const ColumnRequest: ColumnRequest = {
+      boardId: newAddedColumn.boardId,
+      columnId: newAddedColumn.id,
+      controller: CONTROLLER_ADD_NEW_COLUMN,
+      title: newAddedColumn.title,
+      order: columnsAfterAdd.length - 1,
+    };
+    addNewColumnService(ColumnRequest).catch(() => onExpired());
+
     setColumns(columnsAfterAdd);
     setBoard({
       ...board,
@@ -96,6 +161,14 @@ const Kanban: React.FC = () => {
 
     if (isDeleteColumn) {
       newColumns.splice(indexOfColumnUpdate, 1);
+
+      const ColumnRequest: ColumnRequest = {
+        controller: CONTROLLER_DELETE_COLUMN,
+        boardId: coloumnUpdated.boardId,
+        columnId: coloumnUpdated.id,
+        order: indexOfColumnUpdate,
+      };
+      deleteColumnService(ColumnRequest).catch(() => onExpired());
     } else {
       newColumns.splice(indexOfColumnUpdate, 1, coloumnUpdated);
     }
@@ -111,10 +184,7 @@ const Kanban: React.FC = () => {
   return (
     <div className='h-[85vh] rounded-md bg-[#BCB4D8] px-5'>
       <nav className=''>board bar</nav>
-      <Scrollbars
-        style={{ height: '80vh', }}
-        hideTracksWhenNotNeeded={true}
-      >
+      <Scrollbars style={{ height: '80vh' }} hideTracksWhenNotNeeded={true}>
         <div className='flex rounded '>
           <Container
             orientation='horizontal'

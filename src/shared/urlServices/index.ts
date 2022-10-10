@@ -59,6 +59,11 @@ export const CONTROLLER_LOGOUT = 'logout';
 export const CONTROLLER_SIGNUP = 'signUp';
 export const CONTROLLER_GETUSER = 'getUser';
 export const CONTROLLER_ACCESS_TOKEN = 'accessToken';
+export const CONTROLLER_BOARDS = 'boards';
+export const CONTROLLER_CARDS = 'cards';
+export const CONTROLLER_COLUMNS = 'columns';
+export const CONTROLLER_ADD_NEW_COLUMN = 'addNewColumn';
+export const CONTROLLER_DELETE_COLUMN = 'deleteColumn';
 
 const getToken = () => {
   return localStorage.getItem('token')

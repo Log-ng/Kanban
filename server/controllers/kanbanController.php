@@ -16,17 +16,40 @@ class KanbanController extends BaseController {
     public function getCardFromColumnId($columnId) {
         $cards = $this->kanbanModel->getCardFromColumnId($columnId);
         return json_encode(array (
-            'status' => 'Sucess',
+            'status' => 'Success',
             'cards' => $cards
         ));
     }  
     public function getColumnFromBoardId($boardId) {
         $columns = $this->kanbanModel->getColumnFromBoardId($boardId);
         return json_encode(array (
-            'status' => 'Sucess',
+            'status' => 'Success',
             'columns' => $columns
+        ));
+    }
+
+    public function getBoardsFromUserId($token) {
+        $boards = $this->kanbanModel->getBoardsFromUserId($token);
+        return json_encode(array (
+            'status' => 'Success',
+            'boards' => $boards
         ));
     }  
     
+    public function addNewColumn($boardId, $columnId, $order, $title) {
+        $newColumn = $this->kanbanModel->addNewColumn($boardId, $columnId, $order, $title);
+        return json_encode(array (
+            'status' => 'Success',
+            'column' => $newColumn
+        ));
+    }  
+
+    public function deleteColumn($oderColDel, $boardId, $columnId) {
+        $this->kanbanModel->deleteColumn($columnId);
+        $this->kanbanModel->updateAfterDelCol($oderColDel, $boardId);
+        return json_encode(array (
+            'status' => 'Success',
+        ));
+    }
 
 }

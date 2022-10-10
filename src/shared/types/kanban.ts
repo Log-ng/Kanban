@@ -17,14 +17,31 @@ export interface ColumnType {
 
 export interface BoardType {
   id: string;
-  boardName: string;
+  boardName?: string;
   columnOrder: String[];
   columns: ColumnType[];
 }
 
-  export interface DropResult {
-    removedIndex: number;
-    addedIndex: number;
-    payload: object;
-    element: HTMLElement;
+export interface DropResult {
+  removedIndex: number;
+  addedIndex: number;
+  payload: object;
+  element: HTMLElement;
+}
+
+export interface KanbanResponse {
+  data: {
+    status: string;
+    cards?: CardType[];
+    columns?: ColumnType[];
+    boards?: BoardType[];
   }
+}
+
+export interface ColumnRequest {
+  controller: string;
+  boardId?: string;
+  columnId: string;
+  order?:number;
+  title?: string
+}

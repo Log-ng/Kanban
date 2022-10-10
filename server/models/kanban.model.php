@@ -79,5 +79,56 @@ class Kanban {
           array_push($columns, $column);
         };
         return $columns;
-    }   
+    }
+    
+    public function getBoardsFromUserId ($userId) {
+      $query = "SELECT $this->tableBoard.boardId, $this->tableBoard.boardName FROM $this->tableBoard, $this->tableBoardUser "
+      . "WHERE $this->tableBoardUser.boardId=$this->tableBoard.boardId AND $this->tableBoardUser.userId = $userId";
+        
+        $stmt = $this->conn->prepare($query);
+        $stmt->execute();
+        $num = $stmt->rowCount();
+
+        if($num <= 0) return [];
+        
+        $boards = array();
+        while($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+          extract($row);
+          $board = array(
+            'id' => $boardId, 
+            'boardName' => $boardName,
+            'columnOrder' => [],
+            'columns' => [],
+          );
+
+          array_push($boards, $board);
+        };
+        return $boards;
+    }
+
+    public function addNewColumn ($boardId, $columnId, $order, $title) {
+      $query = "INSERT INTO `$this->tableColumn` (boardId, columnId, `order`, title) VALUES (?, ?, ?, ?)";
+
+      $stmt = $this->conn->prepare($query);
+      
+      $stmt->bindParam(1, $boardId);
+      $stmt->bindParam(2, $columnId);
+      $stmt->bindParam(3, $order);
+      $stmt->bindParam(4, $title);
+      return $stmt->execute();
+    }
+
+    public function deleteColumn ($columnId) {
+      $query = "DELETE FROM `$this->tableColumn` WHERE columnId = ". "'$columnId'";
+
+      $stmt = $this->conn->prepare($query);
+      $stmt->execute();
+    } 
+
+    public function updateAfterDelCol($oderColDel, $boardId) {
+      $query = "UPDATE `$this->tableColumn` SET `order` = `order` - 1 WHERE boardId = '$boardId' AND `order`> $oderColDel";
+
+      $stmt = $this->conn->prepare($query);
+      $stmt->execute();
+    }
 }
