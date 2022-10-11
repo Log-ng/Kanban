@@ -131,4 +131,12 @@ class Kanban {
       $stmt = $this->conn->prepare($query);
       $stmt->execute();
     }
+
+    public function onDropColumn($addedIndex, $removedIndex, $columnId) {
+      $query = "UPDATE `$this->tableColumn` SET `order` = $removedIndex WHERE  `order` = $addedIndex;"
+      . " UPDATE `$this->tableColumn` SET `order` = $addedIndex WHERE  columnId  = '$columnId'";
+
+      $stmt = $this->conn->prepare($query);
+      $stmt->execute();
+    }
 }

@@ -52,4 +52,11 @@ class KanbanController extends BaseController {
         ));
     }
 
+    public function onDropColumn($addedIndex, $removedIndex, $columnId) {
+        $this->kanbanModel->onDropColumn($addedIndex, $removedIndex, $columnId);
+        return json_encode(array (
+            'status' => 'Success',
+        ));
+    }
+
 }

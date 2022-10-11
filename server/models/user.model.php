@@ -100,4 +100,8 @@ class User {
         if(!$user) return 0;
         return $user['userId'];
     }
+
+    // public fuction getInformationUser() {
+
+    // }
 }

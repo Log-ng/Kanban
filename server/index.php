@@ -87,6 +87,36 @@ if($_SERVER['REQUEST_METHOD'] === 'DELETE') {
     return;
 }
 
+if($_SERVER['REQUEST_METHOD'] === 'PUT') {
+    $headers = apache_request_headers();
+    $tokenController = new TokenController();
+    
+    if(! isset($headers['Authorization'])) {
+        header("HTTP/1.1 403");
+        echo $tokenController->responeTokenInvalid();
+        return;
+    }
+    if(! $tokenController->isTokenValid($headers['Authorization'])) {
+        header("HTTP/1.1 403");
+        echo $tokenController->responeTokenInvalid();
+        return;
+    }
+    
+    switch ($controller) {
+        case 'dropColumn':
+            $kanbanController = new KanbanController();
+            $addedIndex = $data->addedIndex;
+            $removedIndex = $data->removedIndex;
+            $columnId = $data->columnId;
+            echo $kanbanController->onDropColumn($addedIndex, $removedIndex, $columnId);
+            break;
+
+        default:
+            echo "DELETE method: Not match any path!";
+    }
+    return;
+}
+
 switch ($controller) {
     case 'login':
         $userController = new UserController();

@@ -10,6 +10,7 @@ interface Props {
 
 const Card: React.FC<Props> = (props) => {
   const { card } = props;
+  
 
   const [isModal, setIsModal] = useState<boolean>(false);
   const titleUpdateRef = useRef(card.title);

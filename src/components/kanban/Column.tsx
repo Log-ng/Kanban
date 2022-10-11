@@ -15,7 +15,7 @@ interface Props {
 
 const Board: React.FC<Props> = (props) => {
   const { onCardDrop, column, updateColumn } = props;
-
+  
   const [isUpdateTitle, setIsUpdateTitle] = useState<boolean>(false);
   const [isAddNewCard, setIsAddNewCard] = useState<boolean>(false);
   const [updateTitle, setUpdateTitle] = useState<string>(column.title);
@@ -65,11 +65,7 @@ const Board: React.FC<Props> = (props) => {
           />
         )}
       </header>
-      <Scrollbars
-        autoHeight
-        autoHeightMin={0}
-        autoHeightMax={'55vh'}
-      >
+      <Scrollbars autoHeight autoHeightMin={0} autoHeightMax={'55vh'}>
         <Container
           groupName='col'
           orientation='vertical'

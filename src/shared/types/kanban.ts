@@ -45,3 +45,10 @@ export interface ColumnRequest {
   order?:number;
   title?: string
 }
+
+export interface DropRequest {
+  controller: string;
+  addedIndex: number;
+  removedIndex: number;
+  columnId: string;
+}
