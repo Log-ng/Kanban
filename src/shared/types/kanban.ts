@@ -46,6 +46,17 @@ export interface ColumnRequest {
   title?: string
 }
 
+export interface CardRequest {
+  controller: string;
+  boardId?: string;
+  columnId?: string;
+  order?: number;
+  title: string;
+  cardId: string;
+  description: string;
+  priority: string;
+}
+
 export interface DropRequest {
   controller: string;
   addedIndex: number;

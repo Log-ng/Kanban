@@ -81,6 +81,13 @@ if($_SERVER['REQUEST_METHOD'] === 'DELETE') {
             echo $kanbanController->deleteColumn($oderColDel, $boardId, $columnId);
             break;
 
+        case 'deleteCard':
+            $cardId = $data->cardId;
+            $boardId = $data->boardId;
+            $kanbanController = new KanbanController();
+            echo $kanbanController->deleteCard($cardId, $boardId);
+            break;
+        
         default:
             echo "DELETE method: Not match any path!";
     }
@@ -110,12 +117,24 @@ if($_SERVER['REQUEST_METHOD'] === 'PUT') {
             $columnId = $data->columnId;
             echo $kanbanController->onDropColumn($addedIndex, $removedIndex, $columnId);
             break;
+
         case 'titleColumn':
             $kanbanController = new KanbanController();
             $columnId = $data->columnId;
             $title = $data->title;
             echo $kanbanController->updateTitleColumn($columnId, $title);
             break;
+
+        case 'updateCard':
+            $kanbanController = new KanbanController();
+            $boardId = $data->boardId;
+            $cardId = $data->cardId;
+            $title = $data->title;
+            $description = $data->description;
+            $priority = $data->priority;
+            echo $kanbanController->updateCard($boardId, $cardId, $title, $description, $priority);
+            break;
+            
         default:
             echo "DELETE method: Not match any path!";
     }
@@ -177,6 +196,7 @@ switch ($controller) {
     
         echo $tokenController->genNewAccessToken($headers['Authorization']);
         break;
+
     case 'addNewColumn':
         $headers = apache_request_headers();
         $tokenController = new TokenController();
@@ -197,7 +217,32 @@ switch ($controller) {
         $title = $data->title;
         $kanbanController = new KanbanController();
         echo $kanbanController->addNewColumn($boardId, $columnId, $order, $title);
+        break;
 
+    case 'addNewCard':
+        $headers = apache_request_headers();
+        $tokenController = new TokenController();
+        
+        if(! isset($headers['Authorization'])) {
+            header("HTTP/1.1 403");
+            echo $tokenController->responeTokenInvalid();
+            break;
+        }
+        if(! $tokenController->isTokenValid($headers['Authorization'])) {
+            header("HTTP/1.1 403");
+            echo $tokenController->responeTokenInvalid();
+            break;
+        }
+        $cardId = $data->cardId;
+        $columnId = $data->columnId;
+        $boardId = $data->boardId;
+        $title = $data->title;
+        $description = $data->description;
+        $priority = $data->priority;
+        $order = $data->order;
+        
+        $kanbanController = new KanbanController();
+        echo $kanbanController->addNewCard($cardId, $columnId, $boardId, $title, $description, $priority, $order);
         break;
     default:
         echo "POST method: Not match any path!";

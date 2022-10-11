@@ -2,12 +2,21 @@ import React, { useState, useRef, useEffect } from 'react';
 import Card from './Card';
 import { AiOutlinePlus, AiOutlineClose } from 'react-icons/ai';
 import { GrClose } from 'react-icons/gr';
-import { CardType, ColumnRequest, ColumnType } from 'shared/types/kanban';
+import {
+  CardRequest,
+  CardType,
+  ColumnRequest,
+  ColumnType,
+} from 'shared/types/kanban';
 import { Scrollbars } from 'react-custom-scrollbars';
 import { Container, Draggable, DropResult } from 'react-smooth-dnd';
 import { confirmDelete } from './utils';
-import { onTitleColumnService } from './services';
-import { appRouters, CONTROLLER_TITLE_COLUMN } from 'shared/urlServices';
+import { addNewCardService, onTitleColumnService } from './services';
+import {
+  appRouters,
+  CONTROLLER_ADD_NEW_CARD,
+  CONTROLLER_TITLE_COLUMN,
+} from 'shared/urlServices';
 import { useMyDispatch } from 'redux/hooks';
 import { useNavigate } from 'react-router-dom';
 import { logoutLocal } from 'redux/authSlice';
@@ -20,14 +29,16 @@ interface Props {
 
 const Board: React.FC<Props> = (props) => {
   const { onCardDrop, column, updateColumn } = props;
-  
+
   const [isUpdateTitle, setIsUpdateTitle] = useState<boolean>(false);
   const [isAddNewCard, setIsAddNewCard] = useState<boolean>(false);
   const [updateTitle, setUpdateTitle] = useState<string>(column.title);
   const inputTitleRef = useRef<HTMLInputElement>(null);
-  
+
+  const [newCardTitle, setNewCardTitle] = useState<string>('');
+
   const dispatch = useMyDispatch();
-  const navigation = useNavigate(); 
+  const navigation = useNavigate();
 
   const onExpired = () => {
     dispatch(logoutLocal());
@@ -50,12 +61,12 @@ const Board: React.FC<Props> = (props) => {
     if (updateTitle === '') {
       setUpdateTitle(column.title);
       return;
-    };
+    }
     const columnRequest: ColumnRequest = {
       controller: CONTROLLER_TITLE_COLUMN,
       columnId: column.id,
-      title: updateTitle
-    }
+      title: updateTitle,
+    };
     onTitleColumnService(columnRequest).catch(() => onExpired());
 
     const coloumnUpdated = { ...column };
@@ -63,6 +74,46 @@ const Board: React.FC<Props> = (props) => {
     updateColumn(coloumnUpdated, isDeleteColumn);
   };
 
+  const deleteCard = (cardId: string) => {
+    let newColumn = {...column};
+    const indexOfCardDelete = newColumn.cards.findIndex((card) => card.id === cardId);
+    newColumn.cards.splice(indexOfCardDelete, 1);
+
+    updateColumn(newColumn, false);
+  }
+
+  const addNewCard = () => {
+    setIsAddNewCard(false);
+    if (newCardTitle === '') return;
+
+    const newCardToAdd: CardType = {
+      id: Date.now().toString(),
+      boardId: column.boardId,
+      title: newCardTitle.trim(),
+      columnId: column.id,
+      description: '',
+      priority: '',
+    };
+    
+    let newColumn = { ...column };
+    newColumn.cards.push(newCardToAdd);
+    newColumn.cardOrder.push(newCardToAdd.id);
+
+    const cardRequest: CardRequest = {
+      controller: CONTROLLER_ADD_NEW_CARD,
+      boardId: newCardToAdd.boardId,
+      columnId: newCardToAdd.columnId,
+      order: newColumn.cards.length,
+      title: newCardToAdd.title,
+      cardId: newCardToAdd.id,
+      description: '',
+      priority: '',
+    };
+    addNewCardService(cardRequest).catch(() => onExpired);
+
+    updateColumn(newColumn, false);
+    setNewCardTitle('');
+  };
   return (
     <div className='w-[272px] bg-[#ebecf0] rounded p-2 mr-4 shadow-lg'>
       <header className='column-drag-handle font-semibold p-2 cursor-pointer underline'>
@@ -105,7 +156,11 @@ const Board: React.FC<Props> = (props) => {
           {column.cards.map((card) => (
             // @ts-ignore
             <Draggable key={card.id}>
-              <Card card={card} key={card.id} />
+              <Card
+                card={card}
+                key={card.id}
+                deleteCard={deleteCard}
+              />
             </Draggable>
           ))}
         </Container>
@@ -113,7 +168,7 @@ const Board: React.FC<Props> = (props) => {
 
       {!isAddNewCard && (
         <div
-          className='flex px-2 py-1 cursor-pointer hover:bg-[#C9CCD9] transition-all rounded mt-1'
+          className='flex px-2 py-1 cursor-pointer hover:bg-[#C9CCD9] transition-all mt-1 border-t-[1.2px] border-[#68589b]'
           onClick={() => setIsAddNewCard(true)}
         >
           <AiOutlinePlus size={25} color='gray' className='pt-1' />
@@ -130,19 +185,14 @@ const Board: React.FC<Props> = (props) => {
             placeholder='Enter the tilte of this card'
             required
             autoFocus
-            // onChange={(e) =>
-            //   setCard({
-            //     ...card,
-            //     title: e.target.value,
-            //   })
-            // }
-            // onKeyDown={(e) => handleKeypress(e)}
+            onChange={(e) => setNewCardTitle(e.target.value)}
+            onKeyDown={(e) => e.key === 'Enter' && addNewCard()}
           />
           <div className='grid grid-cols-10'>
             <div className='flex col-span-9'>
               <button
                 className='bg-[#68589b] text-white rounded px-4 py-1.5 justify-start'
-                // onClick={handleAdd}
+                onClick={addNewCard}
               >
                 Add
               </button>

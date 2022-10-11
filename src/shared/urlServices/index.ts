@@ -66,6 +66,9 @@ export const CONTROLLER_ADD_NEW_COLUMN = 'addNewColumn';
 export const CONTROLLER_DELETE_COLUMN = 'deleteColumn';
 export const CONTROLLER_DROP_COLUMN = 'dropColumn';
 export const CONTROLLER_TITLE_COLUMN = 'titleColumn';
+export const CONTROLLER_ADD_NEW_CARD = 'addNewCard';
+export const CONTROLLER_UPDATE_CARD = 'updateCard';
+export const CONTROLLER_DELETE_CARD = 'deleteCard';
 
 const getToken = () => {
   return localStorage.getItem('token')

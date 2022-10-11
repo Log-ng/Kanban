@@ -132,9 +132,9 @@ class Kanban {
       $stmt->execute();
     }
 
-    public function onDropColumn($addedIndex, $removedIndex, $columnId) {
-      $query = "UPDATE `$this->tableColumn` SET `order` = $removedIndex WHERE  `order` = $addedIndex;"
-      . " UPDATE `$this->tableColumn` SET `order` = $addedIndex WHERE  columnId  = '$columnId'";
+    public function swapTwoColumns($from, $to, $columnId) {
+      $query = "UPDATE `$this->tableColumn` SET `order` = $from WHERE  `order` = $to;"
+      . " UPDATE `$this->tableColumn` SET `order` = $to WHERE  columnId  = '$columnId'";
 
       $stmt = $this->conn->prepare($query);
       $stmt->execute();
@@ -142,6 +142,35 @@ class Kanban {
 
     public function updateTitleColumn($columnId, $title) {
       $query = "UPDATE `$this->tableColumn` SET title = '$title' WHERE  columnId = '$columnId'";
+
+      $stmt = $this->conn->prepare($query);
+      $stmt->execute();
+    }
+
+    public function addNewCard($cardId, $columnId, $boardId, $title, $description, $priority, $order) {
+      $query = "INSERT INTO `$this->tableCard` (cardId, boardId, columnId, title, `description`, `priority`, `order`) VALUES (?, ?, ?, ?, ?, ?, ?)";
+
+      $stmt = $this->conn->prepare($query);
+      
+      $stmt->bindParam(1, $cardId);
+      $stmt->bindParam(2, $boardId);
+      $stmt->bindParam(3, $columnId);
+      $stmt->bindParam(4, $title);
+      $stmt->bindParam(5, $description);
+      $stmt->bindParam(6, $priority);
+      $stmt->bindParam(7, $order);
+      return $stmt->execute();
+    }
+
+    public function updateCard($cardId, $title, $description, $priority)  {
+      $query = "UPDATE `$this->tableCard` SET title = '$title', `description` = '$description', priority = '$priority' WHERE  cardId = '$cardId'";
+      $stmt = $this->conn->prepare($query);
+      $stmt->execute();
+    }
+
+    public function deleteCard($cardId) {
+      $query = "DELETE FROM $this->tableCardUser WHERE cardId = '$cardId';"
+      ." DELETE FROM `$this->tableCard` WHERE cardId = ". "'$cardId'";
 
       $stmt = $this->conn->prepare($query);
       $stmt->execute();

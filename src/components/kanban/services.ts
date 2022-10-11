@@ -1,4 +1,4 @@
-import { ColumnRequest, ColumnType, DropRequest } from './../../shared/types/kanban';
+import { ColumnRequest, ColumnType, DropRequest, CardRequest } from './../../shared/types/kanban';
 import {
   CONTROLLER_CARDS,
   CONTROLLER_COLUMNS,
@@ -44,3 +44,15 @@ export const onDropColumnService = (dropColumn: DropRequest): Promise<KanbanResp
 export const onTitleColumnService = (column: ColumnRequest): Promise<KanbanResponse> => {
   return myAxios.put(URL_API, column);
 }
+
+export const addNewCardService = (card: CardRequest): Promise<KanbanResponse> => {
+  return myAxios.post(URL_API, card);
+};
+
+export const updateCardService = (card: CardRequest): Promise<KanbanResponse> => {
+  return myAxios.put(URL_API, card);
+}
+
+export const deleteCardService = (card: CardRequest): Promise<KanbanResponse> => {
+  return myAxios.delete(URL_API, { data: card });
+};

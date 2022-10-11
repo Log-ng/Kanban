@@ -25,12 +25,28 @@ export const applyDrag = (arr: any[], dragResult: DropResult): any[] => {
 
 export const confirmDelete = (dispatch: Function) => {
   confirmAlert({
-    title: 'Are you sure ?',
-    message: 'All card in this column will be deleted',
+    message: 'Are you sure ?',
     buttons: [
       {
         label: YES_BUTTON,
         onClick: () => dispatch(true),
+      },
+      {
+        label: CANCEL_BUTTON,
+      },
+    ],
+    closeOnEscape: true,
+    closeOnClickOutside: true,
+  });
+};
+
+export const confirmDeleteCard = (dispatch: Function) => {
+  confirmAlert({
+    message: 'Are you sure ?',
+    buttons: [
+      {
+        label: YES_BUTTON,
+        onClick: () => dispatch(),
       },
       {
         label: CANCEL_BUTTON,

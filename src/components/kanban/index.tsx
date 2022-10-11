@@ -84,6 +84,8 @@ const Kanban: React.FC = () => {
   }, [isAddNewColumn]);
 
   const onColumnDrop = (dropResult: DropResult) => {
+    console.log(dropResult);
+    
     const dropColumn: DropRequest = {
       controller: CONTROLLER_DROP_COLUMN,
       addedIndex: dropResult.addedIndex ?? -1,
@@ -186,6 +188,7 @@ const Kanban: React.FC = () => {
       columns: newColumns,
     });
   };
+
   console.log(board);
   
 
@@ -244,6 +247,7 @@ const Kanban: React.FC = () => {
                 className='shadow block p-2 w-full text-gray-900 bg-gray-50 rounded border-[1.7px] border-[#68589b] font-semibold'
                 ref={inputAddRef}
                 value={newColumnTitle}
+                onKeyDown={(e) => e.key === 'Enter' && addNewColumn()}
               />
               <div className='flex'>
                 <button
