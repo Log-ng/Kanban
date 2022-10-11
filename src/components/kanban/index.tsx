@@ -186,6 +186,8 @@ const Kanban: React.FC = () => {
       columns: newColumns,
     });
   };
+  console.log(board);
+  
 
   return (
     <div className='h-[85vh] rounded-md bg-[#BCB4D8] px-5'>
@@ -219,7 +221,7 @@ const Kanban: React.FC = () => {
             <motion.div
               initial={{ y: '-100px', opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
-              className='add-new-column w-[272px]'
+              className='add-new-column w-[172px]'
               onClick={() => setIsAddNewColumn(true)}
             >
               <AiOutlinePlus size={25} color='gray' className='pt-1' />

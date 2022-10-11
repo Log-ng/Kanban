@@ -40,3 +40,7 @@ export const deleteColumnService = (column: ColumnRequest): Promise<KanbanRespon
 export const onDropColumnService = (dropColumn: DropRequest): Promise<KanbanResponse> => {
   return myAxios.put(URL_API, dropColumn);
 }
+
+export const onTitleColumnService = (column: ColumnRequest): Promise<KanbanResponse> => {
+  return myAxios.put(URL_API, column);
+}

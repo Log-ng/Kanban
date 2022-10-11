@@ -2,10 +2,15 @@ import React, { useState, useRef, useEffect } from 'react';
 import Card from './Card';
 import { AiOutlinePlus, AiOutlineClose } from 'react-icons/ai';
 import { GrClose } from 'react-icons/gr';
-import { CardType, ColumnType } from 'shared/types/kanban';
+import { CardType, ColumnRequest, ColumnType } from 'shared/types/kanban';
 import { Scrollbars } from 'react-custom-scrollbars';
 import { Container, Draggable, DropResult } from 'react-smooth-dnd';
 import { confirmDelete } from './utils';
+import { onTitleColumnService } from './services';
+import { appRouters, CONTROLLER_TITLE_COLUMN } from 'shared/urlServices';
+import { useMyDispatch } from 'redux/hooks';
+import { useNavigate } from 'react-router-dom';
+import { logoutLocal } from 'redux/authSlice';
 
 interface Props {
   column: ColumnType;
@@ -20,6 +25,14 @@ const Board: React.FC<Props> = (props) => {
   const [isAddNewCard, setIsAddNewCard] = useState<boolean>(false);
   const [updateTitle, setUpdateTitle] = useState<string>(column.title);
   const inputTitleRef = useRef<HTMLInputElement>(null);
+  
+  const dispatch = useMyDispatch();
+  const navigation = useNavigate(); 
+
+  const onExpired = () => {
+    dispatch(logoutLocal());
+    navigation(`../${appRouters.LINK_TO_LOGIN_PAGE}`);
+  };
 
   useEffect(() => {
     const isInputAdded = inputTitleRef && inputTitleRef.current;
@@ -33,8 +46,18 @@ const Board: React.FC<Props> = (props) => {
   });
 
   const onUpdateColumn = (isDeleteColumn: boolean) => {
-    if (updateTitle === '') return;
     setIsUpdateTitle(false);
+    if (updateTitle === '') {
+      setUpdateTitle(column.title);
+      return;
+    };
+    const columnRequest: ColumnRequest = {
+      controller: CONTROLLER_TITLE_COLUMN,
+      columnId: column.id,
+      title: updateTitle
+    }
+    onTitleColumnService(columnRequest).catch(() => onExpired());
+
     const coloumnUpdated = { ...column };
     coloumnUpdated.title = updateTitle;
     updateColumn(coloumnUpdated, isDeleteColumn);

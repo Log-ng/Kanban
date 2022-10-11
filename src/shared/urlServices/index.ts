@@ -1,5 +1,5 @@
 import { TokenResponse } from './../types/auth';
-import axios, { AxiosError, AxiosInstance, AxiosRequestConfig } from 'axios';
+import axios, { AxiosError, AxiosRequestConfig } from 'axios';
 import { appRouters } from 'shared/urlResources';
 
 
@@ -52,9 +52,6 @@ myAxios.interceptors.response.use(
   }
 );
 
-export interface AxiosStatic extends AxiosInstance {
-  all<T>(values: (T | Promise<T>)[]): Promise<T[]>;
-}
 export { appRouters, myAxios };
 
 export const CONTROLLER_LOGIN = 'login';
@@ -68,6 +65,7 @@ export const CONTROLLER_COLUMNS = 'columns';
 export const CONTROLLER_ADD_NEW_COLUMN = 'addNewColumn';
 export const CONTROLLER_DELETE_COLUMN = 'deleteColumn';
 export const CONTROLLER_DROP_COLUMN = 'dropColumn';
+export const CONTROLLER_TITLE_COLUMN = 'titleColumn';
 
 const getToken = () => {
   return localStorage.getItem('token')

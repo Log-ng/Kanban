@@ -110,7 +110,12 @@ if($_SERVER['REQUEST_METHOD'] === 'PUT') {
             $columnId = $data->columnId;
             echo $kanbanController->onDropColumn($addedIndex, $removedIndex, $columnId);
             break;
-
+        case 'titleColumn':
+            $kanbanController = new KanbanController();
+            $columnId = $data->columnId;
+            $title = $data->title;
+            echo $kanbanController->updateTitleColumn($columnId, $title);
+            break;
         default:
             echo "DELETE method: Not match any path!";
     }

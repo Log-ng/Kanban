@@ -139,4 +139,11 @@ class Kanban {
       $stmt = $this->conn->prepare($query);
       $stmt->execute();
     }
+
+    public function updateTitleColumn($columnId, $title) {
+      $query = "UPDATE `$this->tableColumn` SET title = '$title' WHERE  columnId = '$columnId'";
+
+      $stmt = $this->conn->prepare($query);
+      $stmt->execute();
+    }
 }

@@ -59,4 +59,10 @@ class KanbanController extends BaseController {
         ));
     }
 
+    public function updateTitleColumn($columnId, $title) {
+        $this->kanbanModel->updateTitleColumn($columnId, $title);
+        return json_encode(array (
+            'status' => 'Success',
+        ));
+    }
 }
