@@ -1,7 +1,12 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Scrollbars } from 'react-custom-scrollbars';
 import Column from './Column';
-import { BoardType, ColumnRequest, ColumnType, DropRequest } from 'shared/types/kanban';
+import {
+  BoardType,
+  ColumnRequest,
+  ColumnType,
+  DropRequest,
+} from 'shared/types/kanban';
 import { Container, Draggable, DropResult } from 'react-smooth-dnd';
 import { applyDrag } from './utils';
 import { AiOutlinePlus } from 'react-icons/ai';
@@ -16,14 +21,19 @@ import {
   deleteColumnService,
   getCardToColumn,
   getColumns,
+  onDropCardMulColService,
+  onDropCardOneColumnService,
   onDropColumnService,
 } from './services';
 import { logoutLocal } from 'redux/authSlice';
 import {
   CONTROLLER_ADD_NEW_COLUMN,
   CONTROLLER_DELETE_COLUMN,
+  CONTROLLER_DROP_CARD_MUL_COLUMN,
+  CONTROLLER_DROP_CARD_ONE_COLUMN,
   CONTROLLER_DROP_COLUMN,
 } from 'shared/urlServices';
+import MemberTag from './MemberTag';
 
 const Kanban: React.FC = () => {
   const { slug } = useParams();
@@ -49,8 +59,8 @@ const Kanban: React.FC = () => {
 
   useEffect(() => {
     if (!isLogin) navigation(`..${appRouters.LINK_TO_HOME_PAGE}`);
-    try {
-      const getColumnsData = async () => {
+    const getColumnsData = async () => {
+      try {
         const res = await getColumns(slug ?? '');
         if (res.data.status !== 'Success') return;
 
@@ -63,16 +73,11 @@ const Kanban: React.FC = () => {
           ...board,
           columns: newColumns,
         });
-      };
-      getColumnsData();
-    } catch {
-      onExpired();
-    }
-
-    // mockData.columns.sort((a: ColumnType, b: ColumnType) => {
-    //   return board.columnOrder.indexOf(a.id) - board.columnOrder.indexOf(b.id);
-    // });
-    // setColumns(columns.map(column => ))
+      } catch {
+        onExpired();
+      }
+    };
+    getColumnsData();
   }, []);
 
   useEffect(() => {
@@ -85,16 +90,14 @@ const Kanban: React.FC = () => {
 
   const onColumnDrop = (dropResult: DropResult) => {
     console.log(dropResult);
-    
+
     const dropColumn: DropRequest = {
       controller: CONTROLLER_DROP_COLUMN,
       addedIndex: dropResult.addedIndex ?? -1,
       removedIndex: dropResult.removedIndex ?? -1,
       columnId: dropResult.payload.id,
     };
-    onDropColumnService(dropColumn).catch(() =>
-      onExpired()
-    );
+    onDropColumnService(dropColumn).catch(() => onExpired());
 
     let newColumns = [...columns];
     newColumns = applyDrag(newColumns, dropResult);
@@ -112,17 +115,52 @@ const Kanban: React.FC = () => {
   };
 
   const onCardDrop = (columnId: string, dropResult: DropResult) => {
-    if (dropResult.removedIndex !== null || dropResult.addedIndex !== null) {
-      let newColumns = [...columns];
+    const noDropCard =
+      dropResult.removedIndex === null && dropResult.addedIndex == null;
+    if (noDropCard) return;
 
-      let currentColumn = newColumns.find((c) => c.id === columnId) ?? {
-        cards: [],
-        cardOrder: '',
+    const indexOfOldCol = columns.findIndex(col => col.id === dropResult.payload.columnId);
+    const indexOfCardInOldCol = columns[indexOfOldCol].cards.findIndex(card => card.id === dropResult.payload.id);
+
+    let newColumns = [...columns];
+
+    let currentColumn = newColumns.find((c) => c.id === columnId) ?? {
+      cards: [],
+      cardOrder: '',
+    };
+    const lastIndexInNewCol = currentColumn.cards.length;
+
+    currentColumn.cards = applyDrag(currentColumn.cards, dropResult);
+    currentColumn.cardOrder = currentColumn.cards.map((card) => card.id);
+    setColumns(newColumns);
+
+    const dropCardOneColumn =
+      dropResult.removedIndex !== null && dropResult.addedIndex !== null;
+    if (dropCardOneColumn) {
+      const cardRequest: DropRequest = {
+        controller: CONTROLLER_DROP_CARD_ONE_COLUMN,
+        removedIndex: dropResult.removedIndex ?? -1,
+        addedIndex: dropResult.addedIndex ?? -1,
+        cardId: dropResult.payload.id,
+        columnId: dropResult.payload.columnId,
       };
-      currentColumn.cards = applyDrag(currentColumn.cards, dropResult);
-      currentColumn.cardOrder = currentColumn.cards.map((card) => card.id);
-      setColumns(newColumns);
+      onDropCardOneColumnService(cardRequest).catch(() => onExpired());
+      return;
     }
+
+    if(dropResult.removedIndex !== null) return;
+
+    const cardRequestMul: DropRequest = {
+      controller: CONTROLLER_DROP_CARD_MUL_COLUMN,
+      oldColumnId: dropResult.payload.columnId,
+      newColumnId: columnId,
+      oldIndex: indexOfCardInOldCol,
+      newIndex: dropResult.addedIndex ?? -1,
+      cardId: dropResult.payload.id,
+      lastIndexInNewCol: lastIndexInNewCol,
+    };
+    
+    onDropCardMulColService(cardRequestMul).catch(() => onExpired());
   };
 
   const addNewColumn = () => {
@@ -190,10 +228,12 @@ const Kanban: React.FC = () => {
   };
 
   console.log(board);
-  
 
   return (
     <div className='h-[85vh] rounded-md bg-[#BCB4D8] px-5'>
+      <div className='pt-2'>
+        <MemberTag />
+      </div>
       <Scrollbars style={{ height: '80vh' }}>
         <div className='flex rounded mt-5'>
           <Container

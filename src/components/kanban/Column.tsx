@@ -103,7 +103,7 @@ const Board: React.FC<Props> = (props) => {
       controller: CONTROLLER_ADD_NEW_CARD,
       boardId: newCardToAdd.boardId,
       columnId: newCardToAdd.columnId,
-      order: newColumn.cards.length,
+      order: newColumn.cards.length -1,
       title: newCardToAdd.title,
       cardId: newCardToAdd.id,
       description: '',
@@ -153,13 +153,14 @@ const Board: React.FC<Props> = (props) => {
           dragClass='ease-[0.18s]'
           getChildPayload={(index) => column.cards[index]}
         >
-          {column.cards.map((card) => (
+          {column.cards.map((card, index) => (
             // @ts-ignore
             <Draggable key={card.id}>
               <Card
                 card={card}
                 key={card.id}
                 deleteCard={deleteCard}
+                order={index}
               />
             </Draggable>
           ))}

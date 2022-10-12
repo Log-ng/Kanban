@@ -18,3 +18,9 @@ export interface GetUserResponse {
   };
 }
 
+export interface GetUserSingle {
+  data: {
+    status: string;
+    user: User
+  }
+}

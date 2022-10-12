@@ -35,6 +35,7 @@ export interface KanbanResponse {
     cards?: CardType[];
     columns?: ColumnType[];
     boards?: BoardType[];
+    card?: CardType
   }
 }
 
@@ -51,15 +52,21 @@ export interface CardRequest {
   boardId?: string;
   columnId?: string;
   order?: number;
-  title: string;
+  title?: string;
   cardId: string;
-  description: string;
-  priority: string;
+  description?: string;
+  priority?: string;
 }
 
 export interface DropRequest {
   controller: string;
-  addedIndex: number;
-  removedIndex: number;
-  columnId: string;
+  addedIndex?: number;
+  removedIndex?: number;
+  columnId?: string;
+  cardId?: string;
+  oldColumnId?: string;
+  newColumnId?: string;
+  oldIndex?: number;
+  newIndex?: number;
+  lastIndexInNewCol?: number;
 }

@@ -113,4 +113,16 @@ class UserController extends BaseController {
         ));
     }
 
+    public function getUserInformation($userId) {
+        $user = $this->userModel->getUserInformation($userId);
+        if(!$user ) return json_encode(array(
+            'status' => 'Fail',
+        ));
+
+        return json_encode(array (
+            'status' => 'Success',
+            'user' => $user
+        ));
+    }
+
 }

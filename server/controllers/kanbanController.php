@@ -88,10 +88,43 @@ class KanbanController extends BaseController {
         ));
     }
 
-    public function deleteCard($cardId, $boardId) {
+    public function deleteCard($cardId, $boardId, $columnId, $oderCardDel) {
         $this->kanbanModel->deleteCard($cardId);
+        $this->kanbanModel->updateAfterDelCard($oderCardDel, $columnId);
+
         return json_encode(array (
             'status' => 'Success',
         ));
+    }
+
+    public function getCardInformation($boardId, $cardId) {
+        $card = $this->kanbanModel->getCardInformation($cardId);
+        if(!$card ) return json_encode(array(
+            'status' => 'Fail',
+        ));
+
+        return json_encode(array (
+            'status' => 'Success',
+            'card' => $card
+        ));
+    }
+
+    public function dropCardOneColumn($removedIndex, $addedIndex, $cardId, $columnId) {
+        $increment = ($addedIndex > $removedIndex)? 1: -1;
+
+        $times = abs($removedIndex - $addedIndex);
+
+        for($i = 0; $i < $times; $i ++) {
+            $this->kanbanModel->swapTwoCards($removedIndex , $removedIndex + $increment, $cardId, $columnId);
+            $removedIndex += $increment;
+        }
+
+        return json_encode(array (
+            'status' => 'Success',
+        ));
+    }
+    public function dropCardMulCol($oldColumnId, $newColumnId, $oldIndex, $newIndex, $cardId, $lastIndexInNewCol) {
+        $this->kanbanModel->onDropCardMulCol($oldColumnId, $newColumnId, $oldIndex, $newIndex, $cardId, $lastIndexInNewCol);
+        return $this->dropCardOneColumn($lastIndexInNewCol, $newIndex, $cardId, $newColumnId);
     }
 }

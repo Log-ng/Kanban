@@ -69,6 +69,10 @@ export const CONTROLLER_TITLE_COLUMN = 'titleColumn';
 export const CONTROLLER_ADD_NEW_CARD = 'addNewCard';
 export const CONTROLLER_UPDATE_CARD = 'updateCard';
 export const CONTROLLER_DELETE_CARD = 'deleteCard';
+export const CONTROLLER_SINGLE_CARD = 'card';
+export const CONTROLLER_SINGLE_USER = 'user';
+export const CONTROLLER_DROP_CARD_ONE_COLUMN = 'dropCardOneColumn';
+export const CONTROLLER_DROP_CARD_MUL_COLUMN = 'dropCardMulCol';
 
 const getToken = () => {
   return localStorage.getItem('token')

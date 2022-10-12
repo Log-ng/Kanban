@@ -48,6 +48,21 @@ if($_SERVER['REQUEST_METHOD'] === 'GET') {
             $kanbanController = new KanbanController();
             echo $kanbanController->getBoardsFromUserId($userId);
             break;
+
+        case 'card':
+            $userId = $tokenController->getUserIdFromToken($headers['Authorization']);
+            $boardId = $_GET['boardId'];
+            $cardId = $_GET['cardId'];
+            $kanbanController = new KanbanController();
+            echo $kanbanController->getCardInformation($boardId, $cardId);
+            break;
+
+        case 'user':
+            $userId = $tokenController->getUserIdFromToken($headers['Authorization']);
+            $userController = new UserController();
+            echo $userController->getUserInformation($userId);
+            break;
+            
         default:
             echo "GET method: Not match any path!";
     }
@@ -84,8 +99,10 @@ if($_SERVER['REQUEST_METHOD'] === 'DELETE') {
         case 'deleteCard':
             $cardId = $data->cardId;
             $boardId = $data->boardId;
+            $columnId = $data->columnId;
+            $order = $data->order;
             $kanbanController = new KanbanController();
-            echo $kanbanController->deleteCard($cardId, $boardId);
+            echo $kanbanController->deleteCard($cardId, $boardId, $columnId, $order);
             break;
         
         default:
@@ -134,7 +151,27 @@ if($_SERVER['REQUEST_METHOD'] === 'PUT') {
             $priority = $data->priority;
             echo $kanbanController->updateCard($boardId, $cardId, $title, $description, $priority);
             break;
-            
+        case 'dropCardOneColumn':
+            $kanbanController = new KanbanController();
+            $cardId = $data->cardId;
+            $addedIndex = $data->addedIndex;
+            $removedIndex = $data->removedIndex;
+            $columnId = $data->columnId;
+            echo $kanbanController->dropCardOneColumn($removedIndex, $addedIndex, $cardId, $columnId);
+            break;
+
+        case 'dropCardMulCol':
+            $kanbanController = new KanbanController();
+
+            $oldColumnId = $data->oldColumnId;
+            $newColumnId = $data->newColumnId;
+            $oldIndex = $data->oldIndex;
+            $newIndex = $data->newIndex;
+            $cardId = $data->cardId;
+            $lastIndexInNewCol = $data->lastIndexInNewCol;
+            echo $kanbanController->dropCardMulCol($oldColumnId, $newColumnId, $oldIndex, $newIndex, $cardId, $lastIndexInNewCol);
+            break;
+
         default:
             echo "DELETE method: Not match any path!";
     }

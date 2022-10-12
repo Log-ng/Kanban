@@ -4,8 +4,8 @@ import Modal from 'react-modal';
 import { GrClose } from 'react-icons/gr';
 import ContentEditable from 'react-contenteditable';
 import MemberTag from './MemberTag';
-import { updateCardService } from './services';
-import { appRouters, CONTROLLER_UPDATE_CARD } from 'shared/urlServices';
+import { deleteCardService, getSingleCard, updateCardService } from './services';
+import { appRouters, CONTROLLER_DELETE_CARD, CONTROLLER_UPDATE_CARD } from 'shared/urlServices';
 import { useMyDispatch } from 'redux/hooks';
 import { logoutLocal } from 'redux/authSlice';
 import { useNavigate } from 'react-router-dom';
@@ -13,15 +13,17 @@ import { confirmDeleteCard } from './utils';
 interface Props {
   card: CardType;
   deleteCard: (cardId: string) => void;
+  order: number
 }
 
+
 const Card: React.FC<Props> = (props) => {
-  const { deleteCard } = props;
+  const { deleteCard, order } = props;
   
   const [card, setCard] = useState<CardType>(props.card);
   const [isModal, setIsModal] = useState<boolean>(false);
   const titleUpdateRef = useRef(card.title);
-  const priorityUpdateRef = useRef(card.priority ?? 'None');
+  const priorityUpdateRef = useRef(card.priority ?? '');
   const descriptionUpdateRef = useRef(card.description);
 
   const dispatch = useMyDispatch();
@@ -43,8 +45,16 @@ const Card: React.FC<Props> = (props) => {
   };
 
   useEffect(() => {
-    
-  }, [])
+    if(!isModal) return;
+    getSingleCard(card.boardId, card.id)
+      .then((res) => {
+        titleUpdateRef.current = res.data.card?.title ?? '';
+        priorityUpdateRef.current = res.data.card?.priority ?? '' 
+        descriptionUpdateRef.current = res.data.card?.title ?? '';
+        setCard(res.data.card ?? card);
+      })
+      .catch(() => onExpired());
+  }, [isModal]);
   
 
   const closeModal = () => {
@@ -56,19 +66,28 @@ const Card: React.FC<Props> = (props) => {
       priority: priorityUpdateRef.current,
       description: descriptionUpdateRef.current
     };
-    updateCardService(cardRequest).catch(() => onExpired);
-    
     setCard({
       ...card,
       title: titleUpdateRef.current,
       priority: priorityUpdateRef.current,
       description: descriptionUpdateRef.current
     });
+    updateCardService(cardRequest).catch(() => onExpired);
+    
     setIsModal(false);
   };
 
   const onDeleteCard = () => {
-    deleteCard(card.id)
+    deleteCard(card.id);
+
+    const cardRequest: CardRequest = {
+      controller: CONTROLLER_DELETE_CARD,
+      boardId: card.boardId,
+      cardId: card.id,
+      columnId: card.columnId,
+      order: order
+    }
+    deleteCardService(cardRequest).catch(() => onExpired());
   }
   return (
     <>

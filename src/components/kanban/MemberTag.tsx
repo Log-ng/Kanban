@@ -47,7 +47,7 @@ const MemberTag = () => {
       handleTagClick={(index) =>
         console.log('The tag at index ' + index + ' was clicked')
       }
-      inputFieldPosition='bottom'
+      inputFieldPosition='inline'
       autocomplete
       placeholder='Search to add new member...'
       allowDragDrop={false}

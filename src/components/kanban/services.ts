@@ -2,6 +2,7 @@ import { ColumnRequest, ColumnType, DropRequest, CardRequest } from './../../sha
 import {
   CONTROLLER_CARDS,
   CONTROLLER_COLUMNS,
+  CONTROLLER_SINGLE_CARD,
 } from '../../shared/urlServices/index';
 import { URL_API } from '../../shared/urlServices/index';
 
@@ -56,3 +57,16 @@ export const updateCardService = (card: CardRequest): Promise<KanbanResponse> =>
 export const deleteCardService = (card: CardRequest): Promise<KanbanResponse> => {
   return myAxios.delete(URL_API, { data: card });
 };
+
+export const getSingleCard = (boardId: string, cardId: string): Promise<KanbanResponse> => {
+  const paramUrl = `${URL_API}?&controller=${CONTROLLER_SINGLE_CARD}&boardId=${boardId}&cardId=${cardId}`;
+  return myAxios.get(paramUrl);
+};
+
+export const onDropCardOneColumnService = (dropCard: DropRequest): Promise<KanbanResponse> => {
+  return myAxios.put(URL_API, dropCard);
+}
+
+export const onDropCardMulColService = (dropCard: DropRequest): Promise<KanbanResponse> => {
+  return myAxios.put(URL_API, dropCard);
+}

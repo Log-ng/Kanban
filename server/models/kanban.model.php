@@ -7,6 +7,16 @@ class Kanban {
     public $tableCard = 'card';
     public $tableCardUser = 'carduser';
 
+    public function findBoardIdByColumnId ($columnId) {
+      $query = "SELECT boardId FROM `$this->tableColumn` WHERE columnId=?";
+      $stmt = $this->conn->prepare($query);
+
+      $stmt->execute([$columnId]);
+      $column = $stmt->fetch(PDO::FETCH_ASSOC);
+      if(!$column) return 0;
+      return $column['boardId'];
+    }
+
     public function __construct($db) {
         $this->conn = $db;
     }
@@ -133,9 +143,10 @@ class Kanban {
     }
 
     public function swapTwoColumns($from, $to, $columnId) {
-      $query = "UPDATE `$this->tableColumn` SET `order` = $from WHERE  `order` = $to;"
+      $boardId = $this->findBoardIdByColumnId ($columnId);
+      $query = "UPDATE `$this->tableColumn` SET `order` = $from WHERE  `order` = $to AND boardId= '$boardId';"
       . " UPDATE `$this->tableColumn` SET `order` = $to WHERE  columnId  = '$columnId'";
-
+      echo $query;
       $stmt = $this->conn->prepare($query);
       $stmt->execute();
     }
@@ -172,6 +183,49 @@ class Kanban {
       $query = "DELETE FROM $this->tableCardUser WHERE cardId = '$cardId';"
       ." DELETE FROM `$this->tableCard` WHERE cardId = ". "'$cardId'";
 
+      $stmt = $this->conn->prepare($query);
+      $stmt->execute();
+    }
+
+    public function updateAfterDelCard($oderCardDel, $columnId) {
+      $query = "UPDATE `$this->tableCard` SET `order` = `order` - 1 WHERE columnId = '$columnId' AND `order`> $oderCardDel";
+
+      $stmt = $this->conn->prepare($query);
+      $stmt->execute();
+    }
+
+    public function getCardInformation($cardId) {
+        $query = "SELECT * FROM `$this->tableCard` WHERE cardId = '$cardId' LIMIT 1"; 
+
+        $stmt = $this->conn->prepare($query);
+        $stmt->execute();
+
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+        if(!$row) return [];  
+        $card = array(
+          'id' => $row['cardId'], 
+          'boardId' => $row['boardId'],
+          'columnId' => $row['columnId'],
+          'title' => $row['title'],
+          'description' => $row['description'],
+          'priority' => $row['priority'],
+        );
+
+        return $card;
+    }
+
+    public function swapTwoCards($from, $to, $cardId, $columnId) {
+      $query = "UPDATE `$this->tableCard` SET `order` = $from WHERE  `order` = $to AND `columnId` ='$columnId';"
+      . " UPDATE `$this->tableCard` SET `order` = $to WHERE  cardId  = '$cardId'";
+
+      $stmt = $this->conn->prepare($query);
+      $stmt->execute();
+    }
+
+    public function onDropCardMulCol($oldColumnId, $newColumnId, $oldIndex, $newIndex, $cardId, $lastIndexInNewCol) {
+      $this->updateAfterDelCard($oldIndex, $oldColumnId);
+      $query = "UPDATE `$this->tableCard` SET `columnId` = '$newColumnId', `order` = $lastIndexInNewCol WHERE  cardId = '$cardId'";
+      echo $query;
       $stmt = $this->conn->prepare($query);
       $stmt->execute();
     }
