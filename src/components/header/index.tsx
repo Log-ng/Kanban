@@ -17,10 +17,15 @@ const Header: React.FC = () => {
   const username = useMySelector((state) => state.auth.currentUser.username);
 
   const handleLogout = () => {
-    logout({ username, controller: CONTROLLER_LOGOUT });
-    localStorage.clear();
-    dispatch(logoutLocal());
-    navigation(appRouters.LINK_TO_HOME_PAGE);
+    logout({ username, controller: CONTROLLER_LOGOUT })
+      .then(() => {
+        dispatch(logoutLocal());
+        navigation(`../${appRouters.LINK_TO_HOME_PAGE}`);
+      })
+      .catch((err) => {
+        dispatch(logoutLocal());
+        navigation(`../${appRouters.LINK_TO_HOME_PAGE}`);
+      });
   };
 
   const [isDropdonw, setIsDropdonw] = useState<boolean>(false);
@@ -99,7 +104,15 @@ const Header: React.FC = () => {
                 My profile
               </div>
             </div>
-            <div className='py-1' onClick={handleLogout}>
+            <div
+              className='py-1'
+              onClick={() => navigation(`/${appRouters.LINK_TO_USER_LIST}`)}
+            >
+              <div className='text-gray-700 block px-4 py-2 text-sm hover:bg-slate-100'>
+                All users
+              </div>
+            </div>
+            <div className='py-1' onClick={() => handleLogout()}>
               <div className='text-gray-700 block px-4 py-2 text-sm hover:bg-slate-100 rounded-md'>
                 Logout
               </div>

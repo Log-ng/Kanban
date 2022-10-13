@@ -23,14 +23,30 @@ export const applyDrag = (arr: any[], dragResult: DropResult): any[] => {
   return result;
 };
 
-export const submit = () => {
+export const confirmDelete = (dispatch: Function) => {
   confirmAlert({
     message: 'Are you sure ?',
     buttons: [
       {
         label: YES_BUTTON,
-        onClick: () => alert('long')
-        ,
+        onClick: () => dispatch(true),
+      },
+      {
+        label: CANCEL_BUTTON,
+      },
+    ],
+    closeOnEscape: true,
+    closeOnClickOutside: true,
+  });
+};
+
+export const confirmDeleteCard = (dispatch: Function) => {
+  confirmAlert({
+    message: 'Are you sure ?',
+    buttons: [
+      {
+        label: YES_BUTTON,
+        onClick: () => dispatch(),
       },
       {
         label: CANCEL_BUTTON,
