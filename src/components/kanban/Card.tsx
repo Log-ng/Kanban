@@ -10,12 +10,12 @@ import { useMyDispatch } from 'redux/hooks';
 import { logoutLocal } from 'redux/authSlice';
 import { useNavigate } from 'react-router-dom';
 import { confirmDeleteCard } from './utils';
+// import purify from 'dompurify';
 interface Props {
   card: CardType;
   deleteCard: (cardId: string) => void;
   order: number
 }
-
 
 const Card: React.FC<Props> = (props) => {
   const { deleteCard, order } = props;
@@ -50,7 +50,7 @@ const Card: React.FC<Props> = (props) => {
       .then((res) => {
         titleUpdateRef.current = res.data.card?.title ?? '';
         priorityUpdateRef.current = res.data.card?.priority ?? '' 
-        descriptionUpdateRef.current = res.data.card?.title ?? '';
+        descriptionUpdateRef.current = res.data.card?.description ?? '';
         setCard(res.data.card ?? card);
       })
       .catch(() => onExpired());
@@ -114,14 +114,14 @@ const Card: React.FC<Props> = (props) => {
                 <GrClose />
               </button>
               <div className='py-4 px-6 rounded-t border-b dark:border-gray-600'>
-                <ContentEditable
+                {<ContentEditable
                   className='text-base font-semibold text-gray-900 lg:text-xl dark:text-white p-2 mr-6'
                   html={titleUpdateRef.current}
                   onChange={(e) => {
                     if (e.target.value === '') return;
                     titleUpdateRef.current = e.target.value;
                   }}
-                />
+                />}
               </div>
               <div className='px-6 py-2'>
                 <ul className='my-4 space-y-3'>
@@ -132,7 +132,7 @@ const Card: React.FC<Props> = (props) => {
                       </span>
                       <ContentEditable
                         className='inline-flex items-center justify-center px-3 py-1 ml-3 text-xs font-medium text-gray-500 bg-gray-200 rounded dark:bg-gray-700 dark:text-gray-400'
-                        html={priorityUpdateRef.current}
+                        html={(priorityUpdateRef.current)}
                         onChange={(e) => {
                           if (e.target.value === '') return;
                           priorityUpdateRef.current = e.target.value;
@@ -159,7 +159,7 @@ const Card: React.FC<Props> = (props) => {
                     <div className='items-center p-3 text-base  text-gray-900 bg-gray-50 rounded-lg hover:bg-gray-100 group hover:shadow dark:bg-gray-600 dark:hover:bg-gray-500 dark:text-white'>
                       <div className='ml-3 font-bold'>Member:</div>
                       <div className='ml-3'>
-                        <MemberTag />
+                        <MemberTag cardId={card.id}/>
                       </div>
                     </div>
                   </li>

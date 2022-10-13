@@ -62,7 +62,18 @@ if($_SERVER['REQUEST_METHOD'] === 'GET') {
             $userController = new UserController();
             echo $userController->getUserInformation($userId);
             break;
-            
+
+        case 'usersInBoard':
+            $boardId = $_GET['boardId'];
+            $kanbanController = new KanbanController();
+            echo $kanbanController->getUserInBoard($boardId);
+            break;
+
+        case 'usersInCard':
+            $cardId = $_GET['cardId'];
+            $kanbanController = new KanbanController();
+            echo $kanbanController->getUserInCard($cardId);
+            break;
         default:
             echo "GET method: Not match any path!";
     }
@@ -104,7 +115,13 @@ if($_SERVER['REQUEST_METHOD'] === 'DELETE') {
             $kanbanController = new KanbanController();
             echo $kanbanController->deleteCard($cardId, $boardId, $columnId, $order);
             break;
-        
+
+        case 'deleteUserInCard':
+            $cardId = $data->cardId;
+            $userId = $data->userId;
+            $kanbanController = new KanbanController();
+            echo $kanbanController->deleteUserInCard($userId, $cardId);
+            break;
         default:
             echo "DELETE method: Not match any path!";
     }
@@ -280,6 +297,27 @@ switch ($controller) {
         
         $kanbanController = new KanbanController();
         echo $kanbanController->addNewCard($cardId, $columnId, $boardId, $title, $description, $priority, $order);
+        break;
+
+    case 'addUserInCard':
+        $headers = apache_request_headers();
+        $tokenController = new TokenController();
+        
+        if(! isset($headers['Authorization'])) {
+            header("HTTP/1.1 403");
+            echo $tokenController->responeTokenInvalid();
+            break;
+        }
+        if(! $tokenController->isTokenValid($headers['Authorization'])) {
+            header("HTTP/1.1 403");
+            echo $tokenController->responeTokenInvalid();
+            break;
+        }
+        $cardId = $data->cardId;
+        $userId = $data->userId;
+        
+        $kanbanController = new KanbanController();
+        echo $kanbanController->addUserInCard ($userId, $cardId);
         break;
     default:
         echo "POST method: Not match any path!";

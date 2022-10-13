@@ -73,6 +73,10 @@ export const CONTROLLER_SINGLE_CARD = 'card';
 export const CONTROLLER_SINGLE_USER = 'user';
 export const CONTROLLER_DROP_CARD_ONE_COLUMN = 'dropCardOneColumn';
 export const CONTROLLER_DROP_CARD_MUL_COLUMN = 'dropCardMulCol';
+export const CONTROLLER_USER_IN_BOARD = 'usersInBoard';
+export const CONTROLLER_USER_IN_CARD = 'usersInCard';
+export const CONTROLLER_ADD_USER_IN_CARD = 'addUserInCard';
+export const CONTROLLER_DEL_USER_IN_CARD = 'deleteUserInCard';
 
 const getToken = () => {
   return localStorage.getItem('token')

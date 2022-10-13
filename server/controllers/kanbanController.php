@@ -127,4 +127,47 @@ class KanbanController extends BaseController {
         $this->kanbanModel->onDropCardMulCol($oldColumnId, $newColumnId, $oldIndex, $newIndex, $cardId, $lastIndexInNewCol);
         return $this->dropCardOneColumn($lastIndexInNewCol, $newIndex, $cardId, $newColumnId);
     }
+
+    public function getUserInBoard($boardId) {
+        $usersInBoard = $this->kanbanModel->getUserInBoard($boardId);
+
+        if(!$usersInBoard) return json_encode(array (
+            'status' => 'Fail'
+        ));
+
+        return json_encode(array (
+            'status' => 'Success',
+            'users' => $usersInBoard
+        ));
+    }
+
+    public function getUserInCard($cardId) {
+        $usersInCard = $this->kanbanModel->getUserInCard($cardId);
+
+        if(!$usersInCard) return json_encode(array (
+            'status' => 'Fail'
+        ));
+
+        return json_encode(array (
+            'status' => 'Success',
+            'users' => $usersInCard
+        ));
+    }
+
+    public function addUserInCard ($userId, $cardId) {
+        $this->kanbanModel->addUserInCard ($userId, $cardId);
+        return json_encode(array (
+            'status' => 'Success',
+        ));
+    }
+
+    public function deleteUserInCard ($userId, $cardId) {
+        if($this->kanbanModel->deleteUserInCard ($userId, $cardId)) return json_encode(array (
+            'status' => 'Success',
+        ));
+
+        return json_encode(array (
+            'status' => 'Fail',
+        ));
+    }
 }

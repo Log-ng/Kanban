@@ -123,7 +123,10 @@ const Board: React.FC<Props> = (props) => {
               {updateTitle}
             </div>
             <GrClose
-              onClick={() => confirmDelete(onUpdateColumn)}
+              onClick={() => {
+                if(column.cards.length > 0) {alert("Just only delete when have no card in column"); return;}
+                confirmDelete(onUpdateColumn)
+              }}
               className='mt-[2px] cursor-pointer hover:scale-110 transition-all'
               size={20}
             />

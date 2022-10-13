@@ -229,4 +229,70 @@ class Kanban {
       $stmt = $this->conn->prepare($query);
       $stmt->execute();
     }
+
+    public function getUserInBoard($boardId) {
+      $query = "SELECT `user`.`userId`, `user`.`fullname` FROM `user`,  `$this->tableBoardUser` WHERE boarduser.userId = `user`.`userId` AND `boarduser`.`boardId` =  '$boardId'";
+
+      $stmt = $this->conn->prepare($query);
+      $stmt->execute();
+      $num = $stmt->rowCount();
+      echo " ";
+      if($num <= 0) return [];
+      
+      $usersInBoard = array();
+      while($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+
+        extract($row);
+        $user = array(
+          'text' => $fullname,
+          'id' => strval($userId), 
+        );
+
+        array_push($usersInBoard, $user);
+      };
+
+      return $usersInBoard;
+    }
+
+    public function getUserInCard($cardId) {
+      $query = "SELECT `user`.`userId`, `user`.`fullname` FROM `user`,  `$this->tableCardUser` WHERE carduser.userId = `user`.`userId` AND `carduser`.`cardId` =  '$cardId'";
+
+      $stmt = $this->conn->prepare($query);
+      $stmt->execute();
+      $num = $stmt->rowCount();
+      echo " ";
+      if($num <= 0) return [];
+      
+      $usersInCard = array();
+      while($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+
+        extract($row);
+        $user = array(
+          'text' => $fullname,
+          'id' => strval($userId), 
+        );
+
+        array_push($usersInCard, $user);
+      };
+
+      return $usersInCard;
+    }
+
+    public function addUserInCard ($userId, $cardId) {
+      $query = "INSERT INTO `$this->tableCardUser` (userId, cardId) VALUES (?, ?)";
+
+      $stmt = $this->conn->prepare($query);
+      
+      $stmt->bindParam(1, $userId);
+      $stmt->bindParam(2, $cardId);
+      return $stmt->execute();
+    }
+
+    public function deleteUserInCard ($userId, $cardId) {
+      $query = "DELETE FROM `$this->tableCardUser` WHERE cardId = '$cardId' AND `userId` = $userId";
+
+      $stmt = $this->conn->prepare($query);
+      $stmt->execute();
+      return $stmt->rowCount();
+    }
 }

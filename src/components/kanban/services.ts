@@ -1,4 +1,5 @@
-import { ColumnRequest, ColumnType, DropRequest, CardRequest } from './../../shared/types/kanban';
+import { CONTROLLER_USER_IN_BOARD, CONTROLLER_USER_IN_CARD } from './../../shared/urlServices/index';
+import { ColumnRequest, ColumnType, DropRequest, CardRequest, TagUser, UserCard } from './../../shared/types/kanban';
 import {
   CONTROLLER_CARDS,
   CONTROLLER_COLUMNS,
@@ -70,3 +71,23 @@ export const onDropCardOneColumnService = (dropCard: DropRequest): Promise<Kanba
 export const onDropCardMulColService = (dropCard: DropRequest): Promise<KanbanResponse> => {
   return myAxios.put(URL_API, dropCard);
 }
+
+export const userInBoardService = (boardId: string): Promise<TagUser> => {
+    const paramUrl = `${URL_API}?&controller=${CONTROLLER_USER_IN_BOARD}&boardId=${boardId}`;
+  return myAxios.get(paramUrl);
+};
+
+export const userInCardService = (cardId: string): Promise<TagUser> => {
+  const paramUrl = `${URL_API}?&controller=${CONTROLLER_USER_IN_CARD}&cardId=${cardId}`;
+  return myAxios.get(paramUrl);
+}
+
+export const addUserInCardService = (card: UserCard): Promise<KanbanResponse> => {
+  return myAxios.post(URL_API, card);
+};
+
+export const deleteUserInCardService = (card: UserCard): Promise<KanbanResponse> => {
+  return myAxios.delete(URL_API, {data: card});
+};
+
+

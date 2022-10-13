@@ -1,3 +1,4 @@
+
 export interface CardType {
   id: string;
   boardId: string;
@@ -29,13 +30,25 @@ export interface DropResult {
   element: HTMLElement;
 }
 
+export interface Tag {
+  id: string,
+  text: string
+}
+
 export interface KanbanResponse {
   data: {
     status: string;
     cards?: CardType[];
     columns?: ColumnType[];
     boards?: BoardType[];
-    card?: CardType
+    card?: CardType;
+  };
+}
+
+export interface TagUser {
+  data: {
+    status: string;
+    users: Tag[]
   }
 }
 
@@ -69,4 +82,10 @@ export interface DropRequest {
   oldIndex?: number;
   newIndex?: number;
   lastIndexInNewCol?: number;
+}
+
+export interface UserCard {
+  controller: string;
+  userId: number;
+  cardId: string;
 }

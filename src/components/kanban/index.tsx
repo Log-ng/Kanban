@@ -33,7 +33,6 @@ import {
   CONTROLLER_DROP_CARD_ONE_COLUMN,
   CONTROLLER_DROP_COLUMN,
 } from 'shared/urlServices';
-import MemberTag from './MemberTag';
 
 const Kanban: React.FC = () => {
   const { slug } = useParams();
@@ -45,6 +44,8 @@ const Kanban: React.FC = () => {
   const [columns, setColumns] = useState<ColumnType[]>([]);
   const [isAddNewColumn, setIsAddNewColumn] = useState<boolean>(false);
   const [newColumnTitle, setNewColumnTitle] = useState<string>('');
+  const [loaded, setLoaded] = useState<boolean>(false);
+
   const inputAddRef = useRef<HTMLInputElement>(null);
 
   const isLogin = useMySelector((state) => state.auth.isLoggedIn);
@@ -89,7 +90,6 @@ const Kanban: React.FC = () => {
   }, [isAddNewColumn]);
 
   const onColumnDrop = (dropResult: DropResult) => {
-    console.log(dropResult);
 
     const dropColumn: DropRequest = {
       controller: CONTROLLER_DROP_COLUMN,
@@ -227,13 +227,19 @@ const Kanban: React.FC = () => {
     });
   };
 
-  console.log(board);
-
   return (
     <div className='h-[85vh] rounded-md bg-[#BCB4D8] px-5'>
-      <div className='pt-2'>
-        <MemberTag />
-      </div>
+      {!loaded && (
+        <div className='pt-2'>
+          <button
+            className='bg-[#68589b] hover:bg-[#48367F] text-white font-bold py-2 px-4 rounded'
+            onClick={() => setLoaded(true)}
+          >
+            Show Card
+          </button>
+        </div>
+      )}
+
       <Scrollbars style={{ height: '80vh' }}>
         <div className='flex rounded mt-5'>
           <Container

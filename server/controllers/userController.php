@@ -52,7 +52,7 @@ class UserController extends BaseController {
         $fullnameContainsOnlyLetters = preg_match('~^[\p{L}\s]+$~uD', $fullname);
         if(!$fullnameContainsOnlyLetters) return [false, $errorList->getErrorList()['fullnameError'], 'fullname'];
 
-        $passwordContainsSpecChars = preg_match('/[\'^£$%&*()}{@#~?><>,|=_+¬-]/', $password);
+        $passwordContainsSpecChars = preg_match('/[\'^£$%&*()}{@!#~?><>,|=_+¬-]/', $password);
         if(!$passwordContainsSpecChars) return [false, $errorList->getErrorList()['passwordError'], 'password'];
            
         $validateFullname = strlen($fullname) >= 4 and strlen($fullname) <= 30;
@@ -124,5 +124,4 @@ class UserController extends BaseController {
             'user' => $user
         ));
     }
-
 }
