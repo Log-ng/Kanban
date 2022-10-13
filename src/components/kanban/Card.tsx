@@ -1,41 +1,94 @@
-import React, { useState, useRef } from 'react';
-import { CardType } from 'shared/types/kanban';
+import React, { useState, useRef, useEffect } from 'react';
+import { CardRequest, CardType } from 'shared/types/kanban';
 import Modal from 'react-modal';
 import { GrClose } from 'react-icons/gr';
 import ContentEditable from 'react-contenteditable';
 import MemberTag from './MemberTag';
+import { deleteCardService, getSingleCard, updateCardService } from './services';
+import { appRouters, CONTROLLER_DELETE_CARD, CONTROLLER_UPDATE_CARD } from 'shared/urlServices';
+import { useMyDispatch } from 'redux/hooks';
+import { logoutLocal } from 'redux/authSlice';
+import { useNavigate } from 'react-router-dom';
+import { confirmDeleteCard } from './utils';
+// import purify from 'dompurify';
 interface Props {
   card: CardType;
+  deleteCard: (cardId: string) => void;
+  order: number
 }
 
 const Card: React.FC<Props> = (props) => {
-  const { card } = props;
-
+  const { deleteCard, order } = props;
+  
+  const [card, setCard] = useState<CardType>(props.card);
   const [isModal, setIsModal] = useState<boolean>(false);
   const titleUpdateRef = useRef(card.title);
-  const priorityUpdateRef = useRef(card.priority ?? 'None');
+  const priorityUpdateRef = useRef(card.priority ?? '');
   const descriptionUpdateRef = useRef(card.description);
 
-  const handleBlur = () => {
-    console.log(titleUpdateRef.current);
+  const dispatch = useMyDispatch();
+  const navigate = useNavigate();
+  const onExpired = () => {
+    dispatch(logoutLocal());
+    navigate(`../${appRouters.LINK_TO_LOGIN_PAGE}`);
   };
+
   const customStyles = {
     content: {
       top: '50%',
       left: '50%',
       right: 'auto',
       bottom: 'auto',
-      // marginRight: '-50%',
       transform: 'translate(-50%, -50%)',
       backgroundColor: '#68589b',
-      // border: 'solid #68589b 5px',
     },
   };
 
+  useEffect(() => {
+    if(!isModal) return;
+    getSingleCard(card.boardId, card.id)
+      .then((res) => {
+        titleUpdateRef.current = res.data.card?.title ?? '';
+        priorityUpdateRef.current = res.data.card?.priority ?? '' 
+        descriptionUpdateRef.current = res.data.card?.description ?? '';
+        setCard(res.data.card ?? card);
+      })
+      .catch(() => onExpired());
+  }, [isModal]);
+  
+
   const closeModal = () => {
+    const cardRequest: CardRequest = {
+      controller: CONTROLLER_UPDATE_CARD,
+      cardId: card.id,
+      boardId: card.boardId,
+      title: titleUpdateRef.current,
+      priority: priorityUpdateRef.current,
+      description: descriptionUpdateRef.current
+    };
+    setCard({
+      ...card,
+      title: titleUpdateRef.current,
+      priority: priorityUpdateRef.current,
+      description: descriptionUpdateRef.current
+    });
+    updateCardService(cardRequest).catch(() => onExpired);
+    
     setIsModal(false);
   };
 
+  const onDeleteCard = () => {
+    deleteCard(card.id);
+
+    const cardRequest: CardRequest = {
+      controller: CONTROLLER_DELETE_CARD,
+      boardId: card.boardId,
+      cardId: card.id,
+      columnId: card.columnId,
+      order: order
+    }
+    deleteCardService(cardRequest).catch(() => onExpired());
+  }
   return (
     <>
       <article
@@ -61,19 +114,16 @@ const Card: React.FC<Props> = (props) => {
                 <GrClose />
               </button>
               <div className='py-4 px-6 rounded-t border-b dark:border-gray-600'>
-                <ContentEditable
+                {<ContentEditable
                   className='text-base font-semibold text-gray-900 lg:text-xl dark:text-white p-2 mr-6'
                   html={titleUpdateRef.current}
-                  onBlur={handleBlur}
                   onChange={(e) => {
+                    if (e.target.value === '') return;
                     titleUpdateRef.current = e.target.value;
                   }}
-                />
+                />}
               </div>
               <div className='px-6 py-2'>
-                <p className='text-sm font-normal text-gray-500 dark:text-gray-400'>
-                  Created by:
-                </p>
                 <ul className='my-4 space-y-3'>
                   <li className='w-[300px]'>
                     <div className='flex items-center text-base font-bold text-gray-900'>
@@ -82,9 +132,9 @@ const Card: React.FC<Props> = (props) => {
                       </span>
                       <ContentEditable
                         className='inline-flex items-center justify-center px-3 py-1 ml-3 text-xs font-medium text-gray-500 bg-gray-200 rounded dark:bg-gray-700 dark:text-gray-400'
-                        html={priorityUpdateRef.current}
-                        onBlur={handleBlur}
+                        html={(priorityUpdateRef.current)}
                         onChange={(e) => {
+                          if (e.target.value === '') return;
                           priorityUpdateRef.current = e.target.value;
                         }}
                       />
@@ -98,8 +148,8 @@ const Card: React.FC<Props> = (props) => {
                       <ContentEditable
                         className='flex-2 ml-3 break-words text-sm py-2'
                         html={descriptionUpdateRef.current}
-                        onBlur={handleBlur}
                         onChange={(e) => {
+                          if (e.target.value === '') return;
                           descriptionUpdateRef.current = e.target.value;
                         }}
                       />
@@ -109,14 +159,20 @@ const Card: React.FC<Props> = (props) => {
                     <div className='items-center p-3 text-base  text-gray-900 bg-gray-50 rounded-lg hover:bg-gray-100 group hover:shadow dark:bg-gray-600 dark:hover:bg-gray-500 dark:text-white'>
                       <div className='ml-3 font-bold'>Member:</div>
                       <div className='ml-3'>
-                        <MemberTag />
+                        <MemberTag cardId={card.id}/>
                       </div>
                     </div>
                   </li>
-                  <li>
-                    <p className='text-xs italic font-normal text-gray-500 dark:text-gray-400'>
-                      ( Click any fields to update )
+                  <li className='flex justify-around'>
+                    <p className='text-xs italic font-normal text-gray-500 dark:text-gray-400 pt-4 tracking-wide'>
+                      ( *Click any fields to update )
                     </p>
+                    <button
+                      className='transition-all bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded'
+                      onClick={() => confirmDeleteCard(onDeleteCard)}
+                    >
+                      Delete
+                    </button>
                   </li>
                 </ul>
               </div>

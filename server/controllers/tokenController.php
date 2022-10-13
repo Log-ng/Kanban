@@ -46,4 +46,13 @@ class TokenController extends BaseController {
             'token' => $jwt,
         ));
     }
+
+    public function getUserIdFromToken($token) {
+        $secretKey  = $_ENV['SECRET_KEY'];
+
+        $decoded = JWT::decode($token, new Key($secretKey, 'HS256'));
+        $payload = json_decode(json_encode($decoded), true);
+
+        return $payload['data']['userId'];
+    }
 }

@@ -39,3 +39,20 @@ export const confirmDelete = (dispatch: Function) => {
     closeOnClickOutside: true,
   });
 };
+
+export const confirmDeleteCard = (dispatch: Function) => {
+  confirmAlert({
+    message: 'Are you sure ?',
+    buttons: [
+      {
+        label: YES_BUTTON,
+        onClick: () => dispatch(),
+      },
+      {
+        label: CANCEL_BUTTON,
+      },
+    ],
+    closeOnEscape: true,
+    closeOnClickOutside: true,
+  });
+};

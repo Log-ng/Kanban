@@ -1,26 +1,84 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Scrollbars } from 'react-custom-scrollbars';
-import { mockData } from './mockData';
 import Column from './Column';
-import { BoardType, ColumnType } from 'shared/types/kanban';
+import {
+  BoardType,
+  ColumnRequest,
+  ColumnType,
+  DropRequest,
+} from 'shared/types/kanban';
 import { Container, Draggable, DropResult } from 'react-smooth-dnd';
 import { applyDrag } from './utils';
 import { AiOutlinePlus } from 'react-icons/ai';
 import { GrClose } from 'react-icons/gr';
 import { motion } from 'framer-motion';
+import { useMyDispatch, useMySelector } from 'redux/hooks';
+import { useNavigate, useParams } from 'react-router-dom';
+import { setBoardId } from 'redux/boardSlice';
+import { appRouters } from 'shared/urlResources';
+import {
+  addNewColumnService,
+  deleteColumnService,
+  getCardToColumn,
+  getColumns,
+  onDropCardMulColService,
+  onDropCardOneColumnService,
+  onDropColumnService,
+} from './services';
+import { logoutLocal } from 'redux/authSlice';
+import {
+  CONTROLLER_ADD_NEW_COLUMN,
+  CONTROLLER_DELETE_COLUMN,
+  CONTROLLER_DROP_CARD_MUL_COLUMN,
+  CONTROLLER_DROP_CARD_ONE_COLUMN,
+  CONTROLLER_DROP_COLUMN,
+} from 'shared/urlServices';
 
 const Kanban: React.FC = () => {
-  const [board, setBoard] = useState<BoardType>(mockData);
+  const { slug } = useParams();
+  const [board, setBoard] = useState<BoardType>({
+    id: slug ?? '',
+    columnOrder: [],
+    columns: [],
+  });
   const [columns, setColumns] = useState<ColumnType[]>([]);
   const [isAddNewColumn, setIsAddNewColumn] = useState<boolean>(false);
   const [newColumnTitle, setNewColumnTitle] = useState<string>('');
+  const [loaded, setLoaded] = useState<boolean>(false);
+
   const inputAddRef = useRef<HTMLInputElement>(null);
 
+  const isLogin = useMySelector((state) => state.auth.isLoggedIn);
+  const dispatch = useMyDispatch();
+  const onExpired = () => {
+    dispatch(logoutLocal());
+    navigation(`../${appRouters.LINK_TO_LOGIN_PAGE}`);
+  };
+
+  dispatch(setBoardId(slug ?? ''));
+  const navigation = useNavigate();
+
   useEffect(() => {
-    mockData.columns.sort((a: ColumnType, b: ColumnType) => {
-      return board.columnOrder.indexOf(a.id) - board.columnOrder.indexOf(b.id);
-    });
-    setColumns(board.columns);
+    if (!isLogin) navigation(`..${appRouters.LINK_TO_HOME_PAGE}`);
+    const getColumnsData = async () => {
+      try {
+        const res = await getColumns(slug ?? '');
+        if (res.data.status !== 'Success') return;
+
+        let newColumns = res.data.columns ?? [];
+        newColumns = getCardToColumn(newColumns);
+
+        setColumns(newColumns);
+
+        setBoard({
+          ...board,
+          columns: newColumns,
+        });
+      } catch {
+        onExpired();
+      }
+    };
+    getColumnsData();
   }, []);
 
   useEffect(() => {
@@ -32,6 +90,15 @@ const Kanban: React.FC = () => {
   }, [isAddNewColumn]);
 
   const onColumnDrop = (dropResult: DropResult) => {
+
+    const dropColumn: DropRequest = {
+      controller: CONTROLLER_DROP_COLUMN,
+      addedIndex: dropResult.addedIndex ?? -1,
+      removedIndex: dropResult.removedIndex ?? -1,
+      columnId: dropResult.payload.id,
+    };
+    onDropColumnService(dropColumn).catch(() => onExpired());
+
     let newColumns = [...columns];
     newColumns = applyDrag(newColumns, dropResult);
 
@@ -48,17 +115,52 @@ const Kanban: React.FC = () => {
   };
 
   const onCardDrop = (columnId: string, dropResult: DropResult) => {
-    if (dropResult.removedIndex !== null || dropResult.addedIndex !== null) {
-      let newColumns = [...columns];
+    const noDropCard =
+      dropResult.removedIndex === null && dropResult.addedIndex == null;
+    if (noDropCard) return;
 
-      let currentColumn = newColumns.find((c) => c.id === columnId) ?? {
-        cards: [],
-        cardOrder: '',
+    const indexOfOldCol = columns.findIndex(col => col.id === dropResult.payload.columnId);
+    const indexOfCardInOldCol = columns[indexOfOldCol].cards.findIndex(card => card.id === dropResult.payload.id);
+
+    let newColumns = [...columns];
+
+    let currentColumn = newColumns.find((c) => c.id === columnId) ?? {
+      cards: [],
+      cardOrder: '',
+    };
+    const lastIndexInNewCol = currentColumn.cards.length;
+
+    currentColumn.cards = applyDrag(currentColumn.cards, dropResult);
+    currentColumn.cardOrder = currentColumn.cards.map((card) => card.id);
+    setColumns(newColumns);
+
+    const dropCardOneColumn =
+      dropResult.removedIndex !== null && dropResult.addedIndex !== null;
+    if (dropCardOneColumn) {
+      const cardRequest: DropRequest = {
+        controller: CONTROLLER_DROP_CARD_ONE_COLUMN,
+        removedIndex: dropResult.removedIndex ?? -1,
+        addedIndex: dropResult.addedIndex ?? -1,
+        cardId: dropResult.payload.id,
+        columnId: dropResult.payload.columnId,
       };
-      currentColumn.cards = applyDrag(currentColumn.cards, dropResult);
-      currentColumn.cardOrder = currentColumn.cards.map((card) => card.id);
-      setColumns(newColumns);
+      onDropCardOneColumnService(cardRequest).catch(() => onExpired());
+      return;
     }
+
+    if(dropResult.removedIndex !== null) return;
+
+    const cardRequestMul: DropRequest = {
+      controller: CONTROLLER_DROP_CARD_MUL_COLUMN,
+      oldColumnId: dropResult.payload.columnId,
+      newColumnId: columnId,
+      oldIndex: indexOfCardInOldCol,
+      newIndex: dropResult.addedIndex ?? -1,
+      cardId: dropResult.payload.id,
+      lastIndexInNewCol: lastIndexInNewCol,
+    };
+    
+    onDropCardMulColService(cardRequestMul).catch(() => onExpired());
   };
 
   const addNewColumn = () => {
@@ -75,6 +177,15 @@ const Kanban: React.FC = () => {
     };
     let columnsAfterAdd = [...columns];
     columnsAfterAdd.push(newAddedColumn);
+
+    const ColumnRequest: ColumnRequest = {
+      boardId: newAddedColumn.boardId,
+      columnId: newAddedColumn.id,
+      controller: CONTROLLER_ADD_NEW_COLUMN,
+      title: newAddedColumn.title,
+      order: columnsAfterAdd.length - 1,
+    };
+    addNewColumnService(ColumnRequest).catch(() => onExpired());
 
     setColumns(columnsAfterAdd);
     setBoard({
@@ -96,6 +207,14 @@ const Kanban: React.FC = () => {
 
     if (isDeleteColumn) {
       newColumns.splice(indexOfColumnUpdate, 1);
+
+      const ColumnRequest: ColumnRequest = {
+        controller: CONTROLLER_DELETE_COLUMN,
+        boardId: coloumnUpdated.boardId,
+        columnId: coloumnUpdated.id,
+        order: indexOfColumnUpdate,
+      };
+      deleteColumnService(ColumnRequest).catch(() => onExpired());
     } else {
       newColumns.splice(indexOfColumnUpdate, 1, coloumnUpdated);
     }
@@ -110,12 +229,19 @@ const Kanban: React.FC = () => {
 
   return (
     <div className='h-[85vh] rounded-md bg-[#BCB4D8] px-5'>
-      <nav className=''>board bar</nav>
-      <Scrollbars
-        style={{ height: '80vh', }}
-        hideTracksWhenNotNeeded={true}
-      >
-        <div className='flex rounded '>
+      {!loaded && (
+        <div className='pt-2'>
+          <button
+            className='bg-[#68589b] hover:bg-[#48367F] text-white font-bold py-2 px-4 rounded'
+            onClick={() => setLoaded(true)}
+          >
+            Show Card
+          </button>
+        </div>
+      )}
+
+      <Scrollbars style={{ height: '80vh' }}>
+        <div className='flex rounded mt-5'>
           <Container
             orientation='horizontal'
             onDrop={onColumnDrop}
@@ -144,12 +270,12 @@ const Kanban: React.FC = () => {
             <motion.div
               initial={{ y: '-100px', opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
-              className='add-new-column w-[272px]'
+              className='add-new-column w-[172px]'
               onClick={() => setIsAddNewColumn(true)}
             >
               <AiOutlinePlus size={25} color='gray' className='pt-1' />
               <div className='text-gray-500 ml-1 pt-1 font-semibold'>
-                Add another column
+                Add column
               </div>
             </motion.div>
           )}
@@ -167,6 +293,7 @@ const Kanban: React.FC = () => {
                 className='shadow block p-2 w-full text-gray-900 bg-gray-50 rounded border-[1.7px] border-[#68589b] font-semibold'
                 ref={inputAddRef}
                 value={newColumnTitle}
+                onKeyDown={(e) => e.key === 'Enter' && addNewColumn()}
               />
               <div className='flex'>
                 <button

@@ -59,6 +59,24 @@ export const CONTROLLER_LOGOUT = 'logout';
 export const CONTROLLER_SIGNUP = 'signUp';
 export const CONTROLLER_GETUSER = 'getUser';
 export const CONTROLLER_ACCESS_TOKEN = 'accessToken';
+export const CONTROLLER_BOARDS = 'boards';
+export const CONTROLLER_CARDS = 'cards';
+export const CONTROLLER_COLUMNS = 'columns';
+export const CONTROLLER_ADD_NEW_COLUMN = 'addNewColumn';
+export const CONTROLLER_DELETE_COLUMN = 'deleteColumn';
+export const CONTROLLER_DROP_COLUMN = 'dropColumn';
+export const CONTROLLER_TITLE_COLUMN = 'titleColumn';
+export const CONTROLLER_ADD_NEW_CARD = 'addNewCard';
+export const CONTROLLER_UPDATE_CARD = 'updateCard';
+export const CONTROLLER_DELETE_CARD = 'deleteCard';
+export const CONTROLLER_SINGLE_CARD = 'card';
+export const CONTROLLER_SINGLE_USER = 'user';
+export const CONTROLLER_DROP_CARD_ONE_COLUMN = 'dropCardOneColumn';
+export const CONTROLLER_DROP_CARD_MUL_COLUMN = 'dropCardMulCol';
+export const CONTROLLER_USER_IN_BOARD = 'usersInBoard';
+export const CONTROLLER_USER_IN_CARD = 'usersInCard';
+export const CONTROLLER_ADD_USER_IN_CARD = 'addUserInCard';
+export const CONTROLLER_DEL_USER_IN_CARD = 'deleteUserInCard';
 
 const getToken = () => {
   return localStorage.getItem('token')

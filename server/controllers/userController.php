@@ -49,10 +49,10 @@ class UserController extends BaseController {
         $usernameContainsSpecialChars = preg_match('/[\'^£$%&!*()}{@#~?><>,|=_+¬-]/', $username);
         if($usernameContainsSpecialChars) return [false, $errorList->getErrorList()['usernameError'], 'username'];
 
-        $fullnameContainsOnlyLeters = preg_match('~^[\p{L}\s]+$~uD', $fullname);
-        if(!$fullnameContainsOnlyLeters) return [false, $errorList->getErrorList()['fullnameError'], 'fullname'];
+        $fullnameContainsOnlyLetters = preg_match('~^[\p{L}\s]+$~uD', $fullname);
+        if(!$fullnameContainsOnlyLetters) return [false, $errorList->getErrorList()['fullnameError'], 'fullname'];
 
-        $passwordContainsSpecChars = preg_match('/[\'^£$%&*()}{@#~?><>,|=_+¬-]/', $password);
+        $passwordContainsSpecChars = preg_match('/[\'^£$%&*()}{@!#~?><>,|=_+¬-]/', $password);
         if(!$passwordContainsSpecChars) return [false, $errorList->getErrorList()['passwordError'], 'password'];
            
         $validateFullname = strlen($fullname) >= 4 and strlen($fullname) <= 30;
@@ -113,4 +113,15 @@ class UserController extends BaseController {
         ));
     }
 
+    public function getUserInformation($userId) {
+        $user = $this->userModel->getUserInformation($userId);
+        if(!$user ) return json_encode(array(
+            'status' => 'Fail',
+        ));
+
+        return json_encode(array (
+            'status' => 'Success',
+            'user' => $user
+        ));
+    }
 }

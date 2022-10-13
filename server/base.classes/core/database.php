@@ -10,8 +10,8 @@ define('DB_HOST', $_ENV['DB_HOST']);
 define('DB_NAME', $_ENV['DB_NAME']);
 define('DB_USERNAME', $_ENV['DB_USERNAME']);
 define('DB_PASS', $_ENV['DB_PASS']);
-define('EXPIRED_ACCESS_TOKEN', 10);
-define('EXPIRED_REFRESH_TOKEN', 60);
+define('EXPIRED_ACCESS_TOKEN', 3600);
+define('EXPIRED_REFRESH_TOKEN', 3600);
 
 class Database {
     

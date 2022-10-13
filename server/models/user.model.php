@@ -100,4 +100,20 @@ class User {
         if(!$user) return 0;
         return $user['userId'];
     }
+
+    public function getUserInformation($userId) {
+        $query = "SELECT * FROM `$this->table` WHERE userId = '$userId' LIMIT 1"; 
+
+        $stmt = $this->conn->prepare($query);
+        $stmt->execute();
+
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+        if(!$row) return [];  
+        $user = array(
+          'username' => $row['username'],
+          'fullname' => $row['fullname'],
+        );
+
+        return $user;
+    }
 }
